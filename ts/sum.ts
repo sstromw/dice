@@ -6,9 +6,17 @@ export class Sum extends Roll {
         this.children = children;
     }
 
-    roll(): number {
+    roll() {
         let s = 0;
         this.children.forEach(r => { s += r.roll() });
         return s;
+    }
+
+    pdf(x): never {
+        throw new Error("not implemented")
+    }
+
+    cdf(x): never {
+        throw new Error("not implemented")
     }
 }

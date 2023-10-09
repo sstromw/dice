@@ -9,4 +9,14 @@ export class D extends Roll {
     roll() {
         return Math.floor(Math.random() * this.n) + 1;
     }
+
+    pdf(x) {
+        if (x < 1 || x > this.n) return 0;
+        return 1. / this.n;
+    }
+
+    cdf(x) {
+        if (x < 1 || x > this.n) return 0;
+        return x / this.n;
+    }
 }
