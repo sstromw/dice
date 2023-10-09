@@ -1,7 +1,4 @@
-import { Roll } from "./roll";
-import { D } from "./d";
-import { Sum } from "./sum";
-import { Max } from "./max";
+import { D, Sum, Max } from "./dice";
 
 const D6 = new D(6);
 const TwoD6 = new Sum([D6, D6]);
