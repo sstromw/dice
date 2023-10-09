@@ -1,8 +1,10 @@
-type Pdf = { [val: number]: number; } | ((val: number) => number);
-type Cdf = { [val: number]: number; } | ((val: number) => number);
+import { SampleSpace } from "./sample_space";
 
 export abstract class Roll {
     abstract roll(): number;
-    abstract pdf(x: number): number;
-    abstract cdf(x: number): number;
+
+    _sample_space: SampleSpace | undefined;
+    abstract sample_space(): SampleSpace;
+    pdf(n: number): number { return this.sample_space().pdf(n); }
+    cdf(n: number): number { return this.sample_space().cdf(n); }
 }

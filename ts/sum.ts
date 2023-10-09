@@ -1,4 +1,5 @@
 import { Roll } from "./roll";
+import { SampleSpace } from "./sample_space";
 
 export class Sum extends Roll {
     constructor(readonly children: Array<Roll>) {
@@ -12,11 +13,11 @@ export class Sum extends Roll {
         return s;
     }
 
-    pdf(x: number): never {
-        throw new Error("not implemented")
-    }
-
-    cdf(x: number): never {
-        throw new Error("not implemented")
+    sample_space(): SampleSpace {
+        if (this._sample_space !== undefined) {
+            return this._sample_space;
+        }
+        // TODO
+        throw new Error("not implemented");
     }
 }

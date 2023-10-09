@@ -4,12 +4,6 @@ const D6 = new D(6);
 const TwoD6 = new Sum([D6, D6]);
 const MaxD6 = new Max([D6, D6, D6]);
 
-var counts: { [val: number] : number; } = {};
-for (let i = 0; i < 36000; i++) {
-    var x = MaxD6.roll();
-    counts[x] = 1 + (counts[x] || 0);
-}
-
-for (var key in counts) {
-    console.log(key, counts[key]);
+for (let i = 1; i < 13; i++) {
+    console.log(i, MaxD6.pdf(i));
 }
