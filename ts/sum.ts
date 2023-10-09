@@ -12,11 +12,11 @@ export class Sum extends Roll {
         return s;
     }
 
-    pdf(x): never {
+    pdf(x: number): never {
         throw new Error("not implemented")
     }
 
-    cdf(x): never {
+    cdf(x: number): never {
         throw new Error("not implemented")
     }
 }

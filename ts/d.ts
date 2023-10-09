@@ -10,12 +10,12 @@ export class D extends Roll {
         return Math.floor(Math.random() * this.n) + 1;
     }
 
-    pdf(x) {
+    pdf(x: number) {
         if (x < 1 || x > this.n) return 0;
         return 1. / this.n;
     }
 
-    cdf(x) {
+    cdf(x: number) {
         if (x < 1 || x > this.n) return 0;
         return x / this.n;
     }
