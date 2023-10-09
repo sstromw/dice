@@ -5,4 +5,8 @@ export class D extends Roll {
         super();
         this.n = n;
     }
+
+    roll() {
+        return Math.floor(Math.random() * this.n) + 1;
+    }
 }

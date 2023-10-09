@@ -6,9 +6,13 @@
 </head>
 <script>
 import { D } from "./ts/d"
-window.addEventListener("load", () => console.log("hello world"));
+
+const TEXT = document.getElementById("text");
+const D6 = D(6);
+
+TEXT.addEventListener("click", (el, _) => {el.value = D6.roll()})
 </script>
 <body>
-    <h1>TODO: make the whole site</h1>
+    <h1 id="text">TODO: make the whole site</h1>
 </body>
 </html>
