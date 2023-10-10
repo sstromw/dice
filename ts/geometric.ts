@@ -25,4 +25,8 @@ export class Geometric extends Roll {
         )
         return this._sample_space;
     }
+
+    toString() {
+        return `G(${this.p})`;
+    }
 }

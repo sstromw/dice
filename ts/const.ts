@@ -2,18 +2,22 @@ import { Roll } from "./roll";
 import { SampleSpace } from "./sample_space";
 
 export class Const extends Roll {
-    constructor(readonly n: number) {
+    constructor(readonly val: number) {
         super();
-        this.n = n;
+        this.val = val;
     }
 
-    roll() { return this.n; }
+    roll() { return this.val; }
 
     sample_space() {
         if (this._sample_space !== undefined) {
             return this._sample_space;
         }
-        this._sample_space = new SampleSpace(new Map([[this.n, 1]]));
+        this._sample_space = new SampleSpace(new Map([[this.val, 1]]));
         return this._sample_space;
+    }
+
+    toString() {
+        return this.val;
     }
 }

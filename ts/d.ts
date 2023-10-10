@@ -20,4 +20,8 @@ export class D extends Roll {
         this._sample_space = new SampleSpace(M);
         return this._sample_space;
     }
+
+    toString() {
+        return `d${this.n}`;
+    }
 }

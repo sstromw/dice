@@ -24,4 +24,8 @@ export class Coin extends Roll {
         );
         return this._sample_space;
     }
+
+    toString() {
+        return `Coin(${this.p})`;
+    }
 }

@@ -31,4 +31,8 @@ export class Sum extends Roll {
         this._sample_space = new SampleSpace(A);
         return this._sample_space;
     }
+
+    toString() {
+        return this.children.map((r) => r.toString()).join(' + ');
+    }
 }
