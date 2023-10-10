@@ -17,7 +17,8 @@ export class Const extends Roll {
         return this._sample_space;
     }
 
-    toString() {
-        return this.val;
-    }
+    mean() { return this.val; }
+    variance() { return 0; }
+
+    toString() { return this.val; }
 }

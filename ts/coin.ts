@@ -25,7 +25,8 @@ export class Coin extends Roll {
         return this._sample_space;
     }
 
-    toString() {
-        return `Coin(${this.p})`;
-    }
+    mean() { return this.p; }
+    variance() { return this.p * (1 - this.p); }
+
+    toString() { return `Coin(${this.p})`; }
 }

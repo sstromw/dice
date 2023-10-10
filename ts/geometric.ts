@@ -26,7 +26,8 @@ export class Geometric extends Roll {
         return this._sample_space;
     }
 
-    toString() {
-        return `G(${this.p})`;
-    }
+    mean() { return 1/this.p; }
+    variance() { return (1-this.p) / this.p**2; }
+
+    toString() { return `G(${this.p})`; }
 }

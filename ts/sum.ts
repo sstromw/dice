@@ -32,6 +32,8 @@ export class Sum extends Roll {
         return this._sample_space;
     }
 
+    mean() { return this.children.map((r) => r.mean()).reduce((a,b)=>a+b,0); }
+
     toString() {
         return this.children.map((r) => r.toString()).join(' + ');
     }

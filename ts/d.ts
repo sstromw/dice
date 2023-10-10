@@ -21,7 +21,8 @@ export class D extends Roll {
         return this._sample_space;
     }
 
-    toString() {
-        return `d${this.n}`;
-    }
+    mean() { return (this.n + 1)/2; }
+    variance() { return (this.n**2 - 1)/12; }
+
+    toString() { return `d${this.n}`; }
 }
