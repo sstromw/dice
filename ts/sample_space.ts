@@ -4,22 +4,25 @@ export class SampleSpace {
     _pdf: Fn;
     _cdf: Fn;
     prefer_cdf: boolean;
+    min_value: number;
 
-    constructor(pdf: Fn = undefined, cdf: Fn = undefined, prefer_cdf = false) {
+    constructor(
+        pdf: Fn = undefined,
+        cdf: Fn = undefined,
+        prefer_cdf = false,
+        min_value: number = 0) {
         this._pdf = pdf;
         this._cdf = cdf;
         this.prefer_cdf = prefer_cdf;
+        this.min_value = min_value;
         if (this._cdf == undefined) {
-            console.log('a');
             this.build_cdf();
             this.prefer_cdf = false;
         }
         if (this._pdf == undefined) {
-            console.log('b');
             this.build_pdf();
             this.prefer_cdf = true;
         }
-        console.log(this.prefer_cdf);
     }
 
     build_cdf(): void {
@@ -32,6 +35,7 @@ export class SampleSpace {
         } else {
             this._cdf = new Map<number, number>();
             var keys = Array.from(this._pdf.keys()).sort();
+            this.min_value = keys[0];
             var s = 0;
             for(var i=0; i<keys.length; i++) {
                 s += this.pdf(keys[i]);
@@ -49,7 +53,7 @@ export class SampleSpace {
             return;
         } else {
             this._pdf = new Map<number, number>();
-            // TODO
+            // TODO kinda doubt this will ever be necessary.
             throw new Error("not implemented");
         }
     }
@@ -65,9 +69,13 @@ export class SampleSpace {
         if (typeof this._cdf === "function") {
             return this._cdf(n);
         }
-        // TODO: this is broken. The default value shouldn't be zero. If n
-        // isn't in the map we need to iterate through the keys to find the
-        // next smallest value which is in the map.
+        var x = this._cdf?.get(n);
+        if (x) {
+            return x;
+        }
+        while (n > this.min_value && this._cdf?.get(n) === undefined) {
+            n--;
+        }
         return this._cdf?.get(n) || 0;
     }
 }
