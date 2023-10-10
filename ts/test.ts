@@ -17,14 +17,16 @@ function log_deciles(roll: Roll, buckets = [0.1, 0.2, 0.3,
     console.log(roll.toString());
     for(let [x,_] of roll.sample_space()) {
         if (roll.cdf(x) > buckets[i]) {
-            console.log(`${Math.round(100*buckets[i])}%\t${x}`)
-            if (i++ > buckets.length) break;
+            console.log(`${Math.round(100*buckets[i])}%\t${x}`);
+            if (++i == buckets.length) return;
         }
     }
 }
 
-const D25 = new D(25);
-const S = new Sum([D25, D25]);
-const T = new Max([S, S]);
+const G25 = new Geometric(1/25);
 
-log_deciles(T);
+const S = new Sum([G25, G25]);
+log_deciles(S);
+
+const M = new Max([G25, G25, G25]);
+log_deciles(M);
