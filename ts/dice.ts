@@ -1,4 +1,6 @@
 export { Roll } from "./roll";
+
+export { Const } from "./const";
 export { D } from "./d";
-export { Sum } from "./sum";
 export { Max } from "./max";
+export { Sum } from "./sum";
