@@ -49,7 +49,8 @@ export class SampleSpace implements Iterable<[number, number]> {
             throw new Error("constructing empty sample space");
         } else if (typeof this._pdf === "function") {
             this._cdf = (n: number) => {
-                return Array.from(Array(n+1).keys()).reduce((a,b) => a+this.pdf(b));
+                return Array.from(Array(n+1).keys())
+                            .reduce((a,b) => a+this.pdf(b), 0);
             }
         } else {
             this._cdf = new Map<number, number>();

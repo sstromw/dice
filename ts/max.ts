@@ -23,6 +23,6 @@ export class Max extends Roll {
     }
 
     toString() {
-        return this.children.map((r) => r.toString()).join(' << ');
+        return this.children.map((r) => r.toString()).join(' >> ');
     }
 }

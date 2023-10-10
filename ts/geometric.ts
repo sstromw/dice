@@ -12,7 +12,7 @@ export class Geometric extends Roll {
 
     roll() {
         let i: number;
-        for(i=0; Math.random() < this.p; i++);
+        for(i=1; Math.random() > this.p; i++);
         return i;
     }
 
@@ -21,7 +21,7 @@ export class Geometric extends Roll {
             return this._sample_space;
         }
         this._sample_space = new SampleSpace(
-            (n) => Math.pow(1-this.p, n-1) * this.p
+            (n) => n>0 ? Math.pow(1-this.p, n-1) * this.p: 0,
         )
         return this._sample_space;
     }

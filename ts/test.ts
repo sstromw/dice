@@ -23,10 +23,28 @@ function log_deciles(roll: Roll, buckets = [0.1, 0.2, 0.3,
     }
 }
 
-const G25 = new Geometric(1/25);
+function verify(roll: Roll, N=100000, verbose=false): boolean {
+    let counts: Map<number, number> = new Map();
+    for (let i = 0; i<N; i++) {
+        let x = roll.roll();
+        counts.set(x, 1 + (counts.get(x) || 0));
+    }
+    let diffs = Array.from(counts).map(([k,v]) => Math.abs(v/N - roll.pdf(k)));
+    let max = diffs.reduce((a,b) => Math.max(a,b), diffs[0]);
+    if (verbose && max > 0.005) {
+        console.log(`Discrepancy on ${roll.toString()}: ${max}`);
+    }
+    return max < 0.005;
+}
 
-const S = new Sum([G25, G25]);
-log_deciles(S);
+const D6 = new D(6);
+const S  = new Sum([D6,D6,D6]);
+const M  = new Max([D6,D6,D6]);
+const G2 = new Geometric(1/2);
+const TESTS = [D6, S, M, G2];
 
-const M = new Max([G25, G25, G25]);
-log_deciles(M);
+if (true) {
+    for (let r of TESTS) {
+        console.log(`${r.toString()}\t:\t${verify(r) ? 'PASS' : 'FAIL'}`);
+    }
+}
