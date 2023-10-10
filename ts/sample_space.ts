@@ -52,7 +52,8 @@ export class SampleSpace implements Iterable<number> {
             }
         } else {
             this._cdf = new Map<number, number>();
-            var keys = Array.from(this._pdf.keys()).sort();
+            var keys: number[] = Array.from(this._pdf.keys())
+                                      .sort((a,b)=>a-b);
             this.min_value = keys[0];
             var s = 0;
             for(var i=0; i<keys.length; i++) {

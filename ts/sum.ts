@@ -17,7 +17,19 @@ export class Sum extends Roll {
         if (this._sample_space !== undefined) {
             return this._sample_space;
         }
-        // TODO
-        throw new Error("not implemented");
+        var A = new Map<number, number>([[0, 1]]);
+        var k = this.children.length;
+        for(var i = 0; i < k; i++) {
+            var b = new Map<number, number>();
+            for (var [u,q] of A) {
+                for (var v of this.children[i].sample_space()) {
+                    var p = q * this.children[i].pdf(v);
+                    b.set(u+v,p + (b.get(u+v) || 0));
+                }
+            }
+            A = b;
+        }
+        this._sample_space = new SampleSpace(A);
+        return this._sample_space;
     }
 }
