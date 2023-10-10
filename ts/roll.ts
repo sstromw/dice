@@ -11,8 +11,8 @@ export abstract class Roll {
     // TODO figure out how to make this iterable too.
 
     mean(): number {
-        var s = 0;
-        for (var [k,p] of this.sample_space()) {
+        let s = 0;
+        for (let [k,p] of this.sample_space()) {
             s += p*k;
         }
         return s;

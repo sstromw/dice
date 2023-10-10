@@ -17,7 +17,7 @@ export class Max extends Roll {
         if (this._sample_space !== undefined) {
             return this._sample_space;
         }
-        var cdf = (n: number) => this.children.reduce((p, r) => p*r.cdf(n), 1);
+        let cdf = (n: number) => this.children.reduce((p, r) => p*r.cdf(n), 1);
         this._sample_space = new SampleSpace(undefined, cdf);
         return this._sample_space;
     }

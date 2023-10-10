@@ -29,7 +29,7 @@ export class SampleSpace implements Iterable<[number, number]> {
     
     // TODO learn how this actually works so that it's not ugly
     [Symbol.iterator]() {
-        var i = this.min_value;
+        let i = this.min_value;
         // This loop covers cases where min_value hasn't been set
         while (this.cdf(i) == 0) {
             i++;
@@ -53,11 +53,11 @@ export class SampleSpace implements Iterable<[number, number]> {
             }
         } else {
             this._cdf = new Map<number, number>();
-            var keys: number[] = Array.from(this._pdf.keys())
+            let keys: number[] = Array.from(this._pdf.keys())
                                       .sort((a,b)=>a-b);
             this.min_value = keys[0];
-            var s = 0;
-            for(var i=0; i<keys.length; i++) {
+            let s = 0;
+            for(let i=0; i<keys.length; i++) {
                 s += this.pdf(keys[i]);
                 this._cdf.set(keys[i], s);
             }
@@ -89,7 +89,7 @@ export class SampleSpace implements Iterable<[number, number]> {
         if (typeof this._cdf === "function") {
             return this._cdf(n);
         }
-        var x = this._cdf?.get(n);
+        let x = this._cdf?.get(n);
         if (x) {
             return x;
         }

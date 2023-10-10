@@ -15,7 +15,7 @@ export class D extends Roll {
         if (this._sample_space !== undefined) {
             return this._sample_space;
         }
-        var M = new Map<number, number>();
+        let M = new Map<number, number>();
         Array.from(Array(this.n).keys()).forEach(x => { M.set(x+1, 1/this.n); });
         this._sample_space = new SampleSpace(M);
         return this._sample_space;

@@ -11,7 +11,7 @@ export class Geometric extends Roll {
     }
 
     roll() {
-        var i: number;
+        let i: number;
         for(i=0; Math.random() < this.p; i++);
         return i;
     }
