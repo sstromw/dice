@@ -4,9 +4,11 @@ function log_roll(roll: Roll) {
     console.log(roll.toString());
     console.log(`mean: ${roll.mean()}`);
     console.log(`var : ${roll.variance()}`);
-    console.log(`-----------`);
+    console.log(`--------------`);
     for (let [x,p] of roll.sample_space()) {
-        console.log(`${x}\t${p}`);
+        if (p > 0.00005) {
+            console.log(`${x}\t${p.toFixed(4)}`);
+        }
     }
 }
 
@@ -43,7 +45,7 @@ const M  = new Max([D6,D6,D6]);
 const G2 = new Geometric(1/2);
 const TESTS = [D6, S, M, G2];
 
-if (true) {
+if (false) {
     for (let r of TESTS) {
         console.log(`${r.toString()}\t:\t${verify(r) ? 'PASS' : 'FAIL'}`);
     }
