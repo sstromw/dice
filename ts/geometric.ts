@@ -1,8 +1,8 @@
 import { Roll } from "./roll";
 import { SampleSpace } from "./sample_space";
 
-export class Coin extends Roll {
-    constructor(readonly p: number = 0.5) {
+export class Geometric extends Roll {
+    constructor(readonly p: number) {
         super();
         if (p < 0 || p > 1) {
             throw new Error("probability out of bounds: " + p);
@@ -11,8 +11,9 @@ export class Coin extends Roll {
     }
 
     roll() {
-        // I feel like I shouldn't need the "? 1 : 0"
-        return Math.random() < this.p ? 1 : 0;
+        var i: number;
+        for(i=0; Math.random() < this.p; i++);
+        return i;
     }
 
     sample_space() {
@@ -20,8 +21,8 @@ export class Coin extends Roll {
             return this._sample_space;
         }
         this._sample_space = new SampleSpace(
-            new Map([[0, 1-this.p], [1, this.p]])
-        );
+            (n) => Math.pow(1-this.p, n-1) * this.p
+        )
         return this._sample_space;
     }
 }
