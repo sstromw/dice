@@ -2,7 +2,7 @@ type Fn = Map<number, number> | ((val: number) => number) | undefined;
 
 const EPSILON: number = 0.000001;
 
-export class SampleSpace implements Iterable<number> {
+export class SampleSpace implements Iterable<[number, number]> {
     _pdf: Fn;
     _cdf: Fn;
     prefer_cdf: boolean;
@@ -27,17 +27,18 @@ export class SampleSpace implements Iterable<number> {
         }
     }
     
+    // TODO learn how this actually works so that it's not ugly
     [Symbol.iterator]() {
-        var counter = this.min_value;
+        var i = this.min_value;
         // This loop covers cases where min_value hasn't been set
-        while (this.cdf(counter) == 0) {
-            counter++;
+        while (this.cdf(i) == 0) {
+            i++;
         }
         return {
             next: () => {
                 return {
-                    done: this.cdf(counter-1) > 1-EPSILON,
-                    value: counter++
+                    done: this.cdf(i-1) > 1-EPSILON,
+                    value: [i++, this.pdf(i-1)] as [number, number]
                 }
             }
         }

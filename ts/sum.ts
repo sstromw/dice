@@ -21,10 +21,9 @@ export class Sum extends Roll {
         var k = this.children.length;
         for(var i = 0; i < k; i++) {
             var b = new Map<number, number>();
-            for (var [u,q] of A) {
-                for (var v of this.children[i].sample_space()) {
-                    var p = q * this.children[i].pdf(v);
-                    b.set(u+v,p + (b.get(u+v) || 0));
+            for (var [u,p] of A) {
+                for (var [v,q] of this.children[i].sample_space()) {
+                    b.set(u+v, p*q + (b.get(u+v) || 0));
                 }
             }
             A = b;
