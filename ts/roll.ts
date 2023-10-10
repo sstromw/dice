@@ -17,4 +17,13 @@ export abstract class Roll {
         }
         return s;
     }
+
+    variance(): number {
+        let mu = this.mean();
+        let s = 0;
+        for (let [k,p] of this.sample_space()) {
+            s += p * (k-mu)**2;
+        }
+        return s;
+    }
 }
