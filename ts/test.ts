@@ -10,8 +10,21 @@ function log_roll(roll: Roll) {
     }
 }
 
-const D4 = new D(4);
-const S = new Sum([D4, D4]);
+function log_deciles(roll: Roll, buckets = [0.1, 0.2, 0.3,
+                                            0.4, 0.5, 0.6,
+                                            0.7, 0.8, 0.9]) {
+    let i = 0;
+    console.log(roll.toString());
+    for(let [x,_] of roll.sample_space()) {
+        if (roll.cdf(x) > buckets[i]) {
+            console.log(`${Math.round(100*buckets[i])}%\t${x}`)
+            if (i++ > buckets.length) break;
+        }
+    }
+}
+
+const D25 = new D(25);
+const S = new Sum([D25, D25]);
 const T = new Max([S, S]);
 
-log_roll(T);
+log_deciles(T);
