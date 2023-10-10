@@ -7,4 +7,6 @@ export abstract class Roll {
     abstract sample_space(): SampleSpace;
     pdf(n: number): number { return this.sample_space().pdf(n); }
     cdf(n: number): number { return this.sample_space().cdf(n); }
+
+    // TODO figure out how to make this iterable too.
 }
