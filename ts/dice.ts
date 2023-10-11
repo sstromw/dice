@@ -1,6 +1,6 @@
 export { Roll } from "./roll";
 
-export { Coin } from "./cond";
+export { Coin, Cond, Or } from "./cond";
 export { D, Const } from "./d";
 export { Geometric } from "./geometric";
 export { Max } from "./max";
