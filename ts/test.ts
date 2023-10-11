@@ -44,8 +44,9 @@ function verify(roll: Roll, verbose=false, N=100000): boolean {
     return max < 0.005;
 }
 
-const D6  = new D(6);
-const TWO = new Const(2);
+const D6   = new D(6);
+const TWO  = new Const(2);
+const COIN = new Coin();
 const TESTS = [
     D6,
     TWO,
@@ -53,6 +54,7 @@ const TESTS = [
     new Prod([D6,TWO]),
     new Min([D6,D6,D6]),
     new Max([D6,D6,D6]),
+    new Sum([COIN, COIN, COIN, COIN, COIN]),
     new Geometric(1/2),
 ]
 
