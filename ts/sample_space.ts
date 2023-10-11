@@ -74,7 +74,7 @@ export class SampleSpace implements Iterable<[number, number]> {
             return;
         } else {
             this._pdf = new Map<number, number>();
-            // TODO kinda doubt this will ever be necessary.
+            // TODO but kinda doubt this will ever be necessary.
             throw new Error("not implemented");
         }
     }

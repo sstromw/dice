@@ -1,4 +1,4 @@
-import { Coin, Const, D, Geometric, Max, Roll, Sum } from "./dice";
+import { Coin, Const, D, Geometric, Max, Roll, Sum, Prod, Min } from "./dice";
 
 function log_roll(roll: Roll) {
     console.log(roll.toString());
@@ -25,11 +25,16 @@ function log_deciles(roll: Roll, buckets = [0.1, 0.2, 0.3,
     }
 }
 
-function verify(roll: Roll, N=100000, verbose=false): boolean {
+function verify(roll: Roll, verbose=false, N=100000): boolean {
     let counts: Map<number, number> = new Map();
     for (let i = 0; i<N; i++) {
         let x = roll.roll();
         counts.set(x, 1 + (counts.get(x) || 0));
+    }
+    if (verbose) {
+        for (let [k,v] of counts) {
+            console.log(`${k}\t:\t${v/N}\t${roll.pdf(k)}`);
+        }
     }
     let diffs = Array.from(counts).map(([k,v]) => Math.abs(v/N - roll.pdf(k)));
     let max = diffs.reduce((a,b) => Math.max(a,b), diffs[0]);
@@ -39,14 +44,21 @@ function verify(roll: Roll, N=100000, verbose=false): boolean {
     return max < 0.005;
 }
 
-const D6 = new D(6);
-const S  = new Sum([D6,D6,D6]);
-const M  = new Max([D6,D6,D6]);
-const G2 = new Geometric(1/2);
-const TESTS = [D6, S, M, G2];
+const D6  = new D(6);
+const TWO = new Const(2);
+const TESTS = [
+    D6,
+    TWO,
+    new Sum([D6,D6,D6]),
+    new Prod([D6,TWO]),
+    new Min([D6,D6,D6]),
+    new Max([D6,D6,D6]),
+    new Geometric(1/2),
+]
 
-if (false) {
+if (true) {
     for (let r of TESTS) {
         console.log(`${r.toString()}\t:\t${verify(r) ? 'PASS' : 'FAIL'}`);
     }
 }
+

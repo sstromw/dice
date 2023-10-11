@@ -5,4 +5,4 @@ export { Const } from "./const";
 export { D } from "./d";
 export { Geometric } from "./geometric";
 export { Max } from "./max";
-export { Sum } from "./sum";
+export { Sum, Prod, Min } from "./sum";
