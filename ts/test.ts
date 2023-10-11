@@ -1,4 +1,4 @@
-import { Coin, Cond, Const, D, Geometric, Or, Max, Roll, Sum, Prod, Min } from "./dice";
+import { Abs, Coin, Cond, Const, D, Div, Geometric, Mod, Or, Max, Roll, Sum, Prod, Min } from "./dice";
 
 function log_roll(roll: Roll) {
     console.log(roll.toString());
