@@ -2,28 +2,28 @@ import { Roll } from "./roll";
 import { SampleSpace } from "./sample_space";
 
 abstract class AssociativeReduction extends Roll {
-    constructor(readonly children: Roll[],
+    constructor(readonly rolls: Roll[],
                 readonly op: (lst: number[]) => number,
                 readonly symbol: string) {
         super();
-        this.children = children;
+        this.rolls = rolls;
         this.op = op;
         this.symbol = symbol;
     }
 
     roll() {
-        return this.op(this.children.map((r) => r.roll()));
+        return this.op(this.rolls.map((r) => r.roll()));
     }
 
     sample_space(): SampleSpace {
         if (this._sample_space !== undefined) {
             return this._sample_space;
         }
-        let A = this.children[0].sample_space();
-        for(let i = 1; i < this.children.length; i++) {
+        let A = this.rolls[0].sample_space();
+        for(let i = 1; i < this.rolls.length; i++) {
             let b = new Map<number, number>();
             for (let [u,p] of A) {
-                for (let [v,q] of this.children[i].sample_space()) {
+                for (let [v,q] of this.rolls[i].sample_space()) {
                     let x = this.op([u,v]);
                     b.set(x, p*q + (b.get(x) || 0));
                 }
@@ -35,7 +35,7 @@ abstract class AssociativeReduction extends Roll {
     }
 
     toString() {
-        let strs = this.children.map((r) => r.toString()).join(',');
+        let strs = this.rolls.map((r) => r.toString()).join(',');
         return `${this.symbol}(${strs})`;
     }
 }
@@ -70,14 +70,14 @@ export class Min extends AssociativeReduction {
 
 // Max can be done more efficiently without the generic
 export class Max extends Roll {
-    constructor(readonly children: Array<Roll>) {
+    constructor(readonly rolls: Array<Roll>) {
         super();
-        this.children = children;
+        this.rolls = rolls;
     }
 
     roll() {
         let s = Number.MIN_SAFE_INTEGER;
-        this.children.forEach(r => { s = Math.max(r.roll(), s); });
+        this.rolls.forEach(r => { s = Math.max(r.roll(), s); });
         return s;
     }
 
@@ -85,13 +85,13 @@ export class Max extends Roll {
         if (this._sample_space !== undefined) {
             return this._sample_space;
         }
-        let cdf = (n: number) => this.children.reduce((p, r) => p*r.cdf(n), 1);
+        let cdf = (n: number) => this.rolls.reduce((p, r) => p*r.cdf(n), 1);
         this._sample_space = new SampleSpace(undefined, cdf);
         return this._sample_space;
     }
 
     toString() {
-        return this.children.map((r) => r.toString()).join(' >> ');
+        return this.rolls.map((r) => r.toString()).join(' >> ');
     }
 }
 
@@ -148,5 +148,5 @@ export class Div extends UnivariateMap {
         this.n = n;
     }
 
-    toString() { return `${this.R}%${this.n}`; }
+    toString() { return `${this.R}/${this.n}`; }
 }

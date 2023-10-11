@@ -50,10 +50,13 @@ const COIN = new Coin();
 const TESTS = [
     D6,
     TWO,
+
     new Sum([D6,D6,D6]),
     new Prod([D6,TWO]),
     new Min([D6,D6,D6]),
     new Max([D6,D6,D6]),
+    new Mod(D6, 3),
+    new Div(D6, 2),
     new Sum([COIN, COIN, COIN, COIN, COIN]),
     new Cond(COIN, D6, TWO),
     new Or([D6, TWO, COIN]),
