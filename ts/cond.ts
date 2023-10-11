@@ -30,3 +30,82 @@ export class Coin extends Roll {
 
     toString() { return `Coin(${this.p})`; }
 }
+
+export class Cond extends Roll {
+    constructor(readonly condition: Coin,
+                readonly success: Roll,
+                readonly failure: Roll) {
+        super();
+        this.condition = condition;
+        this.success = success;
+        this.failure = failure;
+    }
+
+    roll() {
+        return this.condition.roll() ? 
+               this.success.roll() :
+               this.failure.roll();
+    }
+
+    mean() {
+        return this.condition.p * this.success.mean() +
+               (1-this.condition.p) * this.failure.mean();
+    }
+
+    sample_space() {
+        if (this._sample_space !== undefined) {
+            return this._sample_space;
+        }
+        let A = new Map<number, number>();
+        let p = this.condition.p;
+        for(let [k,v] of this.success.sample_space()) {
+            A.set(k, p*v + (A.get(k) || 0));
+        }
+        for(let [k,v] of this.failure.sample_space()) {
+            A.set(k, (1-p)*v + (A.get(k) || 0));
+        }
+        this._sample_space = new SampleSpace(A);
+        return this._sample_space;
+    }
+
+    toString() {
+        return `${this.condition} ? ${this.success} : ${this.failure}`;
+    }
+}
+
+export class Or extends Roll {
+    length: number;
+
+    constructor(readonly rolls: Roll[]) {
+        super();
+        this.rolls = rolls;
+        this.length = this.rolls.length;
+    }
+    
+    roll() {
+        let n = Math.floor(Math.random() * this.length);
+        return this.rolls[n].roll();
+    }
+
+    sample_space() {
+        if (this._sample_space !== undefined) {
+            return this._sample_space;
+        }
+        let A = new Map<number, number>();
+        for (let R of this.rolls) {
+            for(let [k,v] of R.sample_space()) {
+                A.set(k, v/this.length + (A.get(k) || 0));
+            }
+        }
+        this._sample_space = new SampleSpace(A);
+        return this._sample_space;
+    }
+
+    mean() {
+        return this.rolls.reduce((a,r) => a+r.roll(), 0) / this.length;
+    }
+
+    toString() {
+        return `(${this.rolls.map((R)=>R.toString()).join("|")})`;
+    }
+}
