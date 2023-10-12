@@ -1,5 +1,5 @@
 import { Roll } from "./roll";
-import { SampleSpace } from "./sample_space";
+import { DefaultMap, SampleSpace } from "./sample_space";
 
 export class Geometric extends Roll {
     constructor(readonly p: number) {
@@ -16,6 +16,7 @@ export class Geometric extends Roll {
         return i;
     }
 
+    density() { return new DefaultMap(); }  // This should never be called
     sample_space() {
         if (this._sample_space !== undefined) {
             return this._sample_space;

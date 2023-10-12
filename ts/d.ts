@@ -6,27 +6,23 @@ export class D extends Roll {
         super();
         this.n = n;
     }
+    
+    toString() { return `d${this.n}`; }
 
     roll() {
-        return Math.floor(Math.random() * this.n) + 1;
+        return 1 + Math.floor(Math.random() * this.n);
     }
 
-    sample_space() {
-        if (this._sample_space !== undefined) {
-            return this._sample_space;
-        }
+    density() {
         let M = new DefaultMap();
         for (let k = 1; k <= this.n; k++) {
             M.set(k, 1/this.n);
         }
-        this._sample_space = new SampleSpace(M);
-        return this._sample_space;
+        return M;
     }
 
     mean() { return (this.n + 1)/2; }
     variance() { return (this.n**2 - 1)/12; }
-
-    toString() { return `d${this.n}`; }
 }
 
 export class Const extends Roll {
@@ -35,20 +31,9 @@ export class Const extends Roll {
         this.val = val;
     }
 
+    toString() { return this.val.toString(); }
     roll() { return this.val; }
-
-    sample_space() {
-        if (this._sample_space !== undefined) {
-            return this._sample_space;
-        }
-        this._sample_space = new SampleSpace(
-            new DefaultMap([[this.val, 1]])
-        );
-        return this._sample_space;
-    }
-
+    density() { return new DefaultMap([[this.val, 1]]); }
     mean() { return this.val; }
     variance() { return 0; }
-
-    toString() { return this.val.toString(); }
 }

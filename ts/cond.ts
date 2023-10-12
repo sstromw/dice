@@ -10,25 +10,19 @@ export class Coin extends Roll {
         this.p = p;
     }
 
+    toString() { return `B(${this.p})`; }  // B for Bernoulli
+
     roll() {
         // I feel like I shouldn't need the "? 1 : 0"
         return Math.random() < this.p ? 1 : 0;
     }
 
-    sample_space() {
-        if (this._sample_space !== undefined) {
-            return this._sample_space;
-        }
-        this._sample_space = new SampleSpace(
-            new DefaultMap([[0, 1-this.p], [1, this.p]])
-        );
-        return this._sample_space;
+    density() {
+        return new DefaultMap([[0, 1-this.p], [1, this.p]])
     }
 
     mean() { return this.p; }
     variance() { return this.p * (1 - this.p); }
-
-    toString() { return `B(${this.p})`; }  // B for Bernoulli
 }
 
 export class Cond extends Roll {
@@ -39,6 +33,10 @@ export class Cond extends Roll {
         this.condition = condition;
         this.success = success;
         this.failure = failure;
+    }
+
+    toString() {
+        return `${this.condition} ? ${this.success} : ${this.failure}`;
     }
 
     roll() {
@@ -52,10 +50,7 @@ export class Cond extends Roll {
                (1-this.condition.p) * this.failure.mean();
     }
 
-    sample_space() {
-        if (this._sample_space !== undefined) {
-            return this._sample_space;
-        }
+    density() {
         let A = new DefaultMap();
         let p = this.condition.p;
         for(let [k,v] of this.success.sample_space()) {
@@ -64,12 +59,7 @@ export class Cond extends Roll {
         for(let [k,v] of this.failure.sample_space()) {
             A.increment(k, (1-p)*v);
         }
-        this._sample_space = new SampleSpace(A);
-        return this._sample_space;
-    }
-
-    toString() {
-        return `${this.condition} ? ${this.success} : ${this.failure}`;
+        return A;
     }
 }
 
@@ -81,31 +71,27 @@ export class Or extends Roll {
         this.rolls = rolls;
         this.length = this.rolls.length;
     }
+
+    toString() {
+        return `(${this.rolls.map((R)=>R.toString()).join("|")})`;
+    }
     
     roll() {
         let n = Math.floor(Math.random() * this.length);
         return this.rolls[n].roll();
     }
 
-    sample_space() {
-        if (this._sample_space !== undefined) {
-            return this._sample_space;
-        }
+    density() {
         let A = new DefaultMap();
         for (let R of this.rolls) {
             for(let [k,v] of R.sample_space()) {
                 A.increment(k, v/this.length);
             }
         }
-        this._sample_space = new SampleSpace(A);
-        return this._sample_space;
+        return A;
     }
 
     mean() {
         return this.rolls.reduce((a,r) => a+r.roll(), 0) / this.length;
-    }
-
-    toString() {
-        return `(${this.rolls.map((R)=>R.toString()).join("|")})`;
     }
 }

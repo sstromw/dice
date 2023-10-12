@@ -15,10 +15,7 @@ abstract class AssociativeReduction extends Roll {
         return this.op(this.rolls.map((r) => r.roll()));
     }
 
-    sample_space(): SampleSpace {
-        if (this._sample_space !== undefined) {
-            return this._sample_space;
-        }
+    density() {
         let A = this.rolls[0].sample_space();
         for(let i = 1; i < this.rolls.length; i++) {
             let b = new DefaultMap();
@@ -30,8 +27,7 @@ abstract class AssociativeReduction extends Roll {
             }
             A = new SampleSpace(b);
         }
-        this._sample_space = A;
-        return this._sample_space;
+        return A._pdf as DefaultMap;
     }
 
     toString() {
@@ -93,6 +89,7 @@ export class Max extends Roll {
         return s;
     }
 
+    density() { return new DefaultMap(); }  // Should never be called
     sample_space(): SampleSpace {
         if (this._sample_space !== undefined) {
             return this._sample_space;
@@ -120,17 +117,13 @@ abstract class UnivariateMap extends Roll {
         return this.op(this.R.roll());
     }
 
-    sample_space() {
-        if (this._sample_space !== undefined) {
-            return this._sample_space;
-        }
+    density() {
         let A = new DefaultMap();
         for (let [k,v] of this.R.sample_space()) {
             let x = this.op(k);
             A.increment(x, v);
         }
-        this._sample_space = new SampleSpace(A);
-        return this._sample_space;
+        return A;
     }
 }
 

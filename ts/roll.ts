@@ -1,11 +1,20 @@
-import { SampleSpace } from "./sample_space";
+import { DefaultMap, SampleSpace } from "./sample_space";
 
 export abstract class Roll {
-    abstract roll(): number;
     abstract toString(): string;
+    abstract roll(): number;
 
+    // Set up lazy pdf evaluation since it's *usually* finite
+    protected abstract density(): DefaultMap;
     _sample_space: SampleSpace | undefined;
-    abstract sample_space(): SampleSpace;
+    sample_space(): SampleSpace {
+        if (this._sample_space !== undefined) {
+            return this._sample_space;
+        }
+        this._sample_space = new SampleSpace(this.density());
+        return this._sample_space;
+    }
+
     pdf(n: number): number { return this.sample_space().pdf(n); }
     cdf(n: number): number { return this.sample_space().cdf(n); }
 
