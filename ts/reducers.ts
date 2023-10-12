@@ -48,6 +48,7 @@ export class Sum extends AssociativeReduction {
     }
 
     mean() { return _sum(this.rolls.map((R) => R.mean())); }
+    variance() { return _sum(this.rolls.map((R) => R.variance())); }
 }
 
 // Ok, Mult is a repeated Sum but Prod is a product.
