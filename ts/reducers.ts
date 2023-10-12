@@ -142,6 +142,15 @@ export class Abs extends UnivariateMap {
     toString() { return `|${this.R}|`; }
 }
 
+export class Neg extends UnivariateMap {
+    constructor(readonly R: Roll) {
+        super(R, (x)=>-x);
+        this.R = R;
+    }
+
+    toString() { return `-${this.R}`; }
+}
+
 export class Mod extends UnivariateMap {
     constructor(readonly R: Roll, readonly n: number) {
         super(R, (x) => x%n);

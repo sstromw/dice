@@ -1,9 +1,9 @@
-import { Abs, Coin, Cond, Const, D, Div, Geometric, Mod, Mult, Or, Max, Roll, Sum, Prod, Min } from "./dice";
+import { Abs, Coin, Cond, Const, D, Div, Geometric, Mod, Mult, Neg, Or, Max, Roll, Sum, Prod, Min } from "./dice";
 
 function log_roll(roll: Roll) {
     console.log(roll.toString());
-    console.log(`mean: ${roll.mean()}`);
-    console.log(`var : ${roll.variance()}`);
+    console.log(`mean: ${roll.mean().toFixed(4)}`);
+    console.log(`var : ${roll.variance().toFixed(4)}`);
     console.log(`--------------`);
     for (let [x,p] of roll.sample_space()) {
         if (p > 0.00005) {
@@ -51,26 +51,29 @@ const TESTS = [
     D6,
     TWO,
 
-    new Sum([D6,D6,D6]),
+    new Sum([D6,D6,TWO]),
     new Mult(3, D6),
     new Prod([D6,TWO]),
     new Min([D6,D6,D6]),
 
     new Max([D6,D6,D6]),
     
+    new Neg(D6),
+    new Abs(new Neg(D6)),
     new Mod(D6, 3),
     new Div(D6, 2),
 
-    new Sum([COIN, COIN, COIN, COIN, COIN]),
+    new Mult(10, COIN),
     new Cond(COIN, D6, TWO),
     new Or([D6, TWO, COIN]),
 
     new Geometric(1/2),
 ]
 
-if (true) {
+if (false) {
     for (let r of TESTS) {
-        console.log(`${r.toString().substring(0,7)}\t:\t${verify(r) ? 'PASS' : 'FAIL'}`);
+        console.log(`${verify(r) ? 'PASS' : 'FAIL'}\t: ${r}`);
     }
 }
 
+log_roll(new Neg(new Geometric(1/2)));
