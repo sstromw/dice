@@ -1,5 +1,5 @@
 import { Roll } from "./roll";
-import { SampleSpace } from "./sample_space";
+import { DefaultMap, SampleSpace } from "./sample_space";
 
 abstract class AssociativeReduction extends Roll {
     constructor(readonly rolls: Roll[],
@@ -21,11 +21,11 @@ abstract class AssociativeReduction extends Roll {
         }
         let A = this.rolls[0].sample_space();
         for(let i = 1; i < this.rolls.length; i++) {
-            let b = new Map<number, number>();
+            let b = new DefaultMap();
             for (let [u,p] of A) {
                 for (let [v,q] of this.rolls[i].sample_space()) {
                     let x = this.op([u,v]);
-                    b.set(x, p*q + (b.get(x) || 0));
+                    b.increment(x, p*q);
                 }
             }
             A = new SampleSpace(b);
@@ -123,10 +123,10 @@ abstract class UnivariateMap extends Roll {
         if (this._sample_space !== undefined) {
             return this._sample_space;
         }
-        let A = new Map<number, number>();
+        let A = new DefaultMap();
         for (let [k,v] of this.R.sample_space()) {
             let x = this.op(k);
-            A.set(x, v + (A.get(x) || 0))
+            A.increment(x, v);
         }
         this._sample_space = new SampleSpace(A);
         return this._sample_space;

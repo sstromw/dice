@@ -1,5 +1,5 @@
 import { Roll } from "./roll";
-import { SampleSpace } from "./sample_space";
+import { DefaultMap, SampleSpace } from "./sample_space";
 
 export class Coin extends Roll {
     constructor(readonly p: number = 0.5) {
@@ -20,7 +20,7 @@ export class Coin extends Roll {
             return this._sample_space;
         }
         this._sample_space = new SampleSpace(
-            new Map([[0, 1-this.p], [1, this.p]])
+            new DefaultMap([[0, 1-this.p], [1, this.p]])
         );
         return this._sample_space;
     }
@@ -56,13 +56,13 @@ export class Cond extends Roll {
         if (this._sample_space !== undefined) {
             return this._sample_space;
         }
-        let A = new Map<number, number>();
+        let A = new DefaultMap();
         let p = this.condition.p;
         for(let [k,v] of this.success.sample_space()) {
-            A.set(k, p*v + (A.get(k) || 0));
+            A.increment(k, p*v);
         }
         for(let [k,v] of this.failure.sample_space()) {
-            A.set(k, (1-p)*v + (A.get(k) || 0));
+            A.increment(k, (1-p)*v);
         }
         this._sample_space = new SampleSpace(A);
         return this._sample_space;
@@ -91,10 +91,10 @@ export class Or extends Roll {
         if (this._sample_space !== undefined) {
             return this._sample_space;
         }
-        let A = new Map<number, number>();
+        let A = new DefaultMap();
         for (let R of this.rolls) {
             for(let [k,v] of R.sample_space()) {
-                A.set(k, v/this.length + (A.get(k) || 0));
+                A.increment(k, v/this.length);
             }
         }
         this._sample_space = new SampleSpace(A);

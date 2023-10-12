@@ -68,12 +68,11 @@ const TESTS = [
     new Or([D6, TWO, COIN]),
 
     new Geometric(1/2),
+    new Geometric(1/100),
 ]
 
-if (false) {
+if (true) {
     for (let r of TESTS) {
         console.log(`${verify(r) ? 'PASS' : 'FAIL'}\t: ${r}`);
     }
 }
-
-log_roll(new Neg(new Geometric(1/2)));

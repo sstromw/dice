@@ -1,18 +1,34 @@
-type Fn = Map<number, number> | ((val: number) => number) | undefined;
+
+export class DefaultMap {
+    map: Map<number, number>;
+    constructor(entries: [number,number][] | undefined = undefined) {
+        this.map = new Map(entries);
+    }
+
+    get(k: number): number { return this.map.get(k) || 0; }
+    set(k: number, v: number) { this.map.set(k,v); }
+    increment(k: number, v: number) {
+        this.map.set(k, v + this.get(k));
+    }
+
+    keys() { return this.map.keys(); }
+    values() { return this.map.values(); }
+    entries() { return this.map.entries(); }
+}
+
+type Fn = DefaultMap | ((val: number) => number) | undefined;
 
 const EPSILON: number = 0.000001;
-
 export class SampleSpace implements Iterable<[number, number]> {
     _pdf: Fn;
     _cdf: Fn;
     prefer_cdf: boolean;
     min_value: number;
 
-    constructor(
-        pdf: Fn = undefined,
-        cdf: Fn = undefined,
-        prefer_cdf = false,
-        min_value: number = 0) {
+    constructor(pdf: Fn = undefined,
+                cdf: Fn = undefined,
+                prefer_cdf = false,
+                min_value: number = 0) {
         this._pdf = pdf;
         this._cdf = cdf;
         this.prefer_cdf = prefer_cdf;
@@ -53,7 +69,7 @@ export class SampleSpace implements Iterable<[number, number]> {
                             .reduce((a,b) => a+this.pdf(b), 0);
             }
         } else {
-            this._cdf = new Map<number, number>();
+            this._cdf = new DefaultMap();
             let keys: number[] = Array.from(this._pdf.keys())
                                       .sort((a,b)=>a-b);
             this.min_value = keys[0];
@@ -73,7 +89,7 @@ export class SampleSpace implements Iterable<[number, number]> {
             this._pdf = (n) => this.cdf(n) - this.cdf(n-1);
             return;
         } else {
-            this._pdf = new Map<number, number>();
+            this._pdf = new DefaultMap();
             // TODO but kinda doubt this will ever be necessary.
             throw new Error("not implemented");
         }
