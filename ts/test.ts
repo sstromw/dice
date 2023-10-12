@@ -10,6 +10,7 @@ function log_roll(roll: Roll) {
             console.log(`${x}\t${p.toFixed(4)}`);
         }
     }
+    console.log();
 }
 
 function log_deciles(roll: Roll, buckets = [0.1, 0.2, 0.3,
