@@ -102,7 +102,8 @@ export class Max extends Roll {
     }
 
     toString() {
-        return this.rolls.map((r) => r.toString()).join(' >> ');
+        let strs = this.rolls.map((r) => r.toString()).join(',');
+        return `Max(${strs})`;
     }
 }
 
