@@ -50,6 +50,17 @@ export class Sum extends AssociativeReduction {
     mean() { return _sum(this.rolls.map((R) => R.mean())); }
 }
 
+// Ok, Mult is a repeated Sum but Prod is a product.
+export class Mult extends Sum {
+    constructor(readonly n: number, readonly R: Roll) {
+        super(Array.from({ length: n }, (_) => R));
+        this.R = R;
+        this.n = n;
+    }
+
+    toString() { return `${this.n}${this.R}`; }
+}
+
 let _prod = (M: number[]) => M.reduce((a,b) => a*b, 1);
 export class Prod extends AssociativeReduction {
     constructor(readonly rolls: Roll[]) {

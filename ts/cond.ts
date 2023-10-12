@@ -28,7 +28,7 @@ export class Coin extends Roll {
     mean() { return this.p; }
     variance() { return this.p * (1 - this.p); }
 
-    toString() { return `Coin(${this.p})`; }
+    toString() { return `B(${this.p})`; }  // B for Bernoulli
 }
 
 export class Cond extends Roll {

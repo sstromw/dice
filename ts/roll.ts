@@ -2,6 +2,7 @@ import { SampleSpace } from "./sample_space";
 
 export abstract class Roll {
     abstract roll(): number;
+    abstract toString(): string;
 
     _sample_space: SampleSpace | undefined;
     abstract sample_space(): SampleSpace;

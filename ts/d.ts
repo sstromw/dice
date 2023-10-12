@@ -46,5 +46,5 @@ export class Const extends Roll {
     mean() { return this.val; }
     variance() { return 0; }
 
-    toString() { return this.val; }
+    toString() { return this.val.toString(); }
 }
