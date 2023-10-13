@@ -1,12 +1,21 @@
 
 export class DefaultMap {
     map: Map<number, number>;
+    min_value: number;
+    max_value: number;
+
     constructor(entries: [number,number][] | undefined = undefined) {
         this.map = new Map(entries);
+        this.min_value = Number.MAX_SAFE_INTEGER;
+        this.max_value = Number.MIN_SAFE_INTEGER;
     }
 
     get(k: number): number { return this.map.get(k) || 0; }
-    set(k: number, v: number) { this.map.set(k,v); }
+    set(k: number, v: number) {
+        if (k < this.min_value) this.min_value = k;
+        if (k > this.max_value) this.max_value = k;
+        this.map.set(k,v);
+    }
     increment(k: number, v: number) {
         this.map.set(k, v + this.get(k));
     }
@@ -106,13 +115,8 @@ export class SampleSpace implements Iterable<[number, number]> {
         if (typeof this._cdf === "function") {
             return this._cdf(n);
         }
-        let x = this._cdf?.get(n);
-        if (x) {
-            return x;
-        }
-        while (n > this.min_value && this._cdf?.get(n) === undefined) {
-            n--;
-        }
+        if (n < (this._cdf?.min_value || Number.MIN_SAFE_INTEGER)) return 0;
+        if (n > (this._cdf?.max_value || Number.MAX_SAFE_INTEGER)) return 1;
         return this._cdf?.get(n) || 0;
     }
 }

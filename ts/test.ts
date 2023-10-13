@@ -1,4 +1,4 @@
-import { Abs, Coin, Cond, Const, D, Div, Geometric, Max, Min, Mod, Mult, Neg, Or, Prod, Roll, Sum } from "./dice";
+import { Abs, Coin, Cond, Const, D, Eq, Div, Le, Lt, Ge, Geometric, Gt, Max, Min, Mod, Mult, Ne, Neg, Or, Prod, Roll, Sum } from "./dice";
 
 function log_roll(roll: Roll) {
     console.log(roll.toString());
@@ -67,6 +67,13 @@ const TESTS = [
     new Mult(10, COIN),
     new Cond(COIN, D6, TWO),
     new Or([D6, TWO, COIN]),
+
+    new Eq(D6, TWO),
+    new Ne(D6, TWO),
+    new Lt(D6, TWO),
+    new Le(D6, TWO),
+    new Gt(D6, TWO),
+    new Ge(D6, TWO),
 
     new Geometric(1/2),
     new Geometric(1/100),
