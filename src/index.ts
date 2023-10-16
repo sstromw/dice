@@ -1,17 +1,53 @@
 import { Abs, Coin, Cond, Const, D, Eq, Div, Le, Lt, Ge, Geometric, Gt, Max, Min, Mod, Mult, Ne, Neg, Or, Prod, Roll, Sum } from "./dice";
 import { Parse } from "./parse"
 
-function log_roll(roll: Roll) {
-    console.log(roll.toString());
-    console.log(`mean: ${roll.mean().toFixed(4)}`);
-    console.log(`var : ${roll.variance().toFixed(4)}`);
-    console.log(`--------------`);
+// const D6   = new D(6);
+// const TWO  = new Const(2);
+// const COIN = new Coin();
+// const TESTS = [
+//     D6,
+//     TWO,
+
+//     new Sum([D6,D6,TWO]),
+//     new Mult(3, D6),
+//     new Prod([D6,TWO]),
+//     new Min([D6,D6,D6]),
+
+//     new Max([D6,D6,D6]),
+    
+//     new Neg(D6),
+//     new Abs(new Neg(D6)),
+//     new Mod(D6, 3),
+//     new Div(D6, 2),
+
+//     new Mult(10, COIN),
+//     new Cond(COIN, D6, TWO),
+//     new Or([D6, TWO, COIN]),
+
+//     new Eq(D6, TWO),
+//     new Ne(D6, TWO),
+//     new Lt(D6, TWO),
+//     new Le(D6, TWO),
+//     new Gt(D6, TWO),
+//     new Ge(D6, TWO),
+
+//     new Geometric(1/2),
+//     new Geometric(1/100),
+// ]
+
+function log_roll(roll: Roll): string {
+    let s = "";
+    let append = (x: string) => (s += x + "<br>");
+    append(roll.toString());
+    append(`mean: ${roll.mean().toFixed(4)}`);
+    append(`var : ${roll.variance().toFixed(4)}`);
+    append(`--------------`);
     for (let [x,p] of roll.sample_space()) {
         if (p > 0.00005) {
-            console.log(`${x}\t${p.toFixed(4)}`);
+            append(`${x}\t${p.toFixed(4)}`);
         }
     }
-    console.log();
+    return s;
 }
 
 function log_deciles(roll: Roll, buckets = [0.1, 0.2, 0.3,
@@ -46,45 +82,18 @@ function verify(roll: Roll, verbose=false, N=100000): boolean {
     return max < 0.005;
 }
 
-const D6   = new D(6);
-const TWO  = new Const(2);
-const COIN = new Coin();
-const TESTS = [
-    D6,
-    TWO,
 
-    new Sum([D6,D6,TWO]),
-    new Mult(3, D6),
-    new Prod([D6,TWO]),
-    new Min([D6,D6,D6]),
-
-    new Max([D6,D6,D6]),
-    
-    new Neg(D6),
-    new Abs(new Neg(D6)),
-    new Mod(D6, 3),
-    new Div(D6, 2),
-
-    new Mult(10, COIN),
-    new Cond(COIN, D6, TWO),
-    new Or([D6, TWO, COIN]),
-
-    new Eq(D6, TWO),
-    new Ne(D6, TWO),
-    new Lt(D6, TWO),
-    new Le(D6, TWO),
-    new Gt(D6, TWO),
-    new Ge(D6, TWO),
-
-    new Geometric(1/2),
-    new Geometric(1/100),
-]
-
-if (false) {
-    for (let r of TESTS) {
-        console.log(`${verify(r) ? 'PASS' : 'FAIL'}\t: ${r}`);
+function buttonpress() {
+    let str = (document.getElementById('field') as HTMLInputElement).value;
+    if (str) {
+        let R = Parse(str);
+        if (R) {
+            let textbox = document.getElementById('textbox') as HTMLParagraphElement;
+            let roll_log = log_roll(R);
+            roll_log = "<tt>" + roll_log + "<tt>";
+            textbox.innerHTML = roll_log;
+        }
     }
 }
 
-let R = Parse("d4 + d6 + 3d10");
-log_roll(R);
+document.getElementById("button")?.addEventListener("click", buttonpress);
