@@ -82,18 +82,40 @@ function verify(roll: Roll, verbose=false, N=100000): boolean {
     return max < 0.005;
 }
 
+const PARSE_TESTS = [
+    "d6",
+    "d100",
+    "2d6",
+    "d6 + d4",
+    "(d6 + d4)",
+    "2(d6+d4)",
+    "2(d6+d4) + d4",
+    "max(d6,d4)",
+    "mAX(d6,   D4)",
+    // TODO "(d6 + (d2 + d3))",
+]
 
-function buttonpress() {
-    let str = (document.getElementById('field') as HTMLInputElement).value;
-    if (str) {
-        let R = Parse(str);
-        if (R) {
-            let textbox = document.getElementById('textbox') as HTMLParagraphElement;
-            let roll_log = log_roll(R);
-            roll_log = "<tt>" + roll_log + "<tt>";
-            textbox.innerHTML = roll_log;
-        }
+for (let s of PARSE_TESTS) {
+    let x = Parse(s)
+    if (x) {
+        console.log(`PASS\t${x}`);
+    } else {
+        console.log(`FAIL\t${s}`);
     }
 }
 
-document.getElementById("button")?.addEventListener("click", buttonpress);
+
+// function buttonpress() {
+//     let str = (document.getElementById('field') as HTMLInputElement).value;
+//     if (str) {
+//         let R = Parse(str);
+//         if (R) {
+//             let textbox = document.getElementById('textbox') as HTMLParagraphElement;
+//             let roll_log = log_roll(R);
+//             roll_log = "<tt>" + roll_log + "<tt>";
+//             textbox.innerHTML = roll_log;
+//         }
+//     }
+// }
+
+// document.getElementById("button")?.addEventListener("click", buttonpress);
