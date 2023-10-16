@@ -16,7 +16,7 @@ export function Parse(s: string): Roll | undefined {
     }
 
     // Match D
-    let m = s.match(/(?<n_rolls>[0-9]*)d(?<roll_size>[0-9]+)/);
+    let m = s.match(/^(?<n_rolls>[0-9]*)d(?<roll_size>[0-9]+)$/);
     if (m) {
         let die = new D(+(m.groups?.roll_size || 0));
         if (m.groups?.n_rolls) {
