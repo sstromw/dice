@@ -45,8 +45,16 @@ export class Parse {
             }
             if (m && (R as Roll)) {
                 if (m.groups?.prefix.match(/[0-9]+/)) {
-                    let n = +m?.groups?.prefix;
+                    let n = +m.groups?.prefix;
                     R = new Mult(n, R as Roll);
+                }
+                if (m.groups?.prefix == "g") {
+                    let x = +m.groups?.infix;
+                    R = new Geometric(x);
+                }
+                if (m.groups?.prefix == "c") {
+                    let x = +m.groups?.infix || 0.5;
+                    R = new Coin(x);
                 }
                 this.addToken(m[0], R as Roll);
             }
@@ -66,10 +74,18 @@ export class Parse {
             return new Sum(rolls as Roll[]);
         }
 
+        let factors = s.split('*');
+        if (factors.length > 1) {
+            let rolls = factors.map((t) => this._parse(t));
+            // TODO Needs error checking
+            return new Prod(rolls as Roll[]);
+        }
+
         // Match D
         let m = s.match(/^(?<n_rolls>[0-9]*)d(?<roll_size>[0-9]+)$/);
-        if (m) {
-            let die = new D(+(m.groups?.roll_size || 0));
+        if (m && m.groups?.roll_size) {
+            let n = +m.groups?.roll_size;
+            let die = n == 2 ? new Coin() : new D(n);
             if (m.groups?.n_rolls) {
                 return new Mult(+(m.groups?.n_rolls || 1), die);
             }

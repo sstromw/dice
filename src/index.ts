@@ -85,6 +85,7 @@ function verify(roll: Roll, verbose=false, N=100000): boolean {
 const PARSE_TESTS = [
     "d6",
     "d100",
+    "d2",
     "2d6",
     "d6 + d4",
     "(d6 + d4)",
@@ -93,6 +94,9 @@ const PARSE_TESTS = [
     "max(d6,d4)",
     "mAX(d6,   D4)",
     "(d6 + (d2 + d3))",
+    "g(0.1)",
+    "c(0.25)",
+    "c()",
 ]
 
 for (let s of PARSE_TESTS) {
