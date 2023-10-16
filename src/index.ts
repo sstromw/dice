@@ -92,16 +92,12 @@ const PARSE_TESTS = [
     "2(d6+d4) + d4",
     "max(d6,d4)",
     "mAX(d6,   D4)",
-    // TODO "(d6 + (d2 + d3))",
+    "(d6 + (d2 + d3))",
 ]
 
 for (let s of PARSE_TESTS) {
-    let x = Parse(s)
-    if (x) {
-        console.log(`PASS\t${x}`);
-    } else {
-        console.log(`FAIL\t${s}`);
-    }
+    let x = new Parse(s).parse();
+    console.log(x);
 }
 
 
