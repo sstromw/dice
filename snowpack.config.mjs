@@ -28,6 +28,6 @@ export default {
     /* ... */
   },
   buildOptions: {
-    /* ... */
+    baseUrl: '/dice'
   },
 };
