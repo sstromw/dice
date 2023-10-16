@@ -1,4 +1,5 @@
 import { Abs, Coin, Cond, Const, D, Eq, Div, Le, Lt, Ge, Geometric, Gt, Max, Min, Mod, Mult, Ne, Neg, Or, Prod, Roll, Sum } from "./dice";
+import { Parse } from "./parse"
 
 function log_roll(roll: Roll) {
     console.log(roll.toString());
@@ -79,8 +80,11 @@ const TESTS = [
     new Geometric(1/100),
 ]
 
-if (true) {
+if (false) {
     for (let r of TESTS) {
         console.log(`${verify(r) ? 'PASS' : 'FAIL'}\t: ${r}`);
     }
 }
+
+let R = Parse("d4 + d6 + 3d10");
+log_roll(R);

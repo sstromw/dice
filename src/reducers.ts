@@ -43,6 +43,10 @@ export class Sum extends AssociativeReduction {
         this.rolls = rolls;
     }
 
+    toString() {
+        return this.rolls.map((r) => r.toString()).join(' + ');
+    }
+
     mean() { return _sum(this.rolls.map((R) => R.mean())); }
     variance() { return _sum(this.rolls.map((R) => R.variance())); }
 }
