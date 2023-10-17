@@ -94,6 +94,7 @@ export class Parse {
         // Problems
         // * Cond, Div, and Mod aren't covered
         // * Subtraction is totally broken
+        // * Cond is actually broken since it still requires a Coin condition
 
         // Match reducers
         let R: Roll;
@@ -142,6 +143,7 @@ export class Parse {
             return new Abs(R as Roll);
         }
 
+        // Match Neg
         if (m = s.match(/^-(?<infix>.*$)/)) {
             // TODO add error checking
             let R = this._parse(m.groups?.infix || "");
