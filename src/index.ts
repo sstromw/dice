@@ -82,46 +82,46 @@ function verify(roll: Roll, verbose=false, N=100000): boolean {
     return max < 0.005;
 }
 
-const PARSE_TESTS = [
-    "d6",
-    "d100",
-    "d2",
-    "2d6",
-    "2",
-    "d6 + d4",
-    "(d6 + d4)",
-    "d6 + 2",
-    "d6 + 2(2)",
-    "d6 + 2*2*2",
-    "-d6",
-    "-2d6 + 2",
-    "2(d6+d4)",
-    "2(d6+d4) + d4",
-    "max(d6,d4)",
-    "mAX(d6,   D4)",
-    "(d6 + (d2 + d3))",
-    "g(0.1)",
-    "c(0.25)",
-    "c()",
-]
+// const PARSE_TESTS = [
+//     "d6",
+//     "d100",
+//     "d2",
+//     "2d6",
+//     "2",
+//     "d6 + d4",
+//     "(d6 + d4)",
+//     "d6 + 2",
+//     "d6 + 2(2)",
+//     "d6 + 2*2*2",
+//     "-d6",
+//     "-2d6 + 2",
+//     "2(d6+d4)",
+//     "2(d6+d4) + d4",
+//     "max(d6,d4)",
+//     "mAX(d6,   D4)",
+//     "(d6 + (d2 + d3))",
+//     "g(0.1)",
+//     "c(0.25)",
+//     "c()",
+// ]
 
-for (let s of PARSE_TESTS) {
-    let x = new Parse(s).parse();
-    console.log(`${x}`);
-}
-
-
-// function buttonpress() {
-//     let str = (document.getElementById('field') as HTMLInputElement).value;
-//     if (str) {
-//         let R = Parse(str);
-//         if (R) {
-//             let textbox = document.getElementById('textbox') as HTMLParagraphElement;
-//             let roll_log = log_roll(R);
-//             roll_log = "<tt>" + roll_log + "<tt>";
-//             textbox.innerHTML = roll_log;
-//         }
-//     }
+// for (let s of PARSE_TESTS) {
+//     let x = new Parse(s).parse();
+//     console.log(`${x}`);
 // }
 
-// document.getElementById("button")?.addEventListener("click", buttonpress);
+
+function buttonpress() {
+    let str = (document.getElementById('field') as HTMLInputElement).value;
+    if (str) {
+        let R = new Parse(str).parse();
+        if (R) {
+            let textbox = document.getElementById('textbox') as HTMLParagraphElement;
+            let roll_log = log_roll(R as Roll);
+            roll_log = "<tt>" + roll_log + "<tt>";
+            textbox.innerHTML = roll_log;
+        }
+    }
+}
+
+document.getElementById("button")?.addEventListener("click", buttonpress);

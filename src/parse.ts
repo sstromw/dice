@@ -73,7 +73,8 @@ export class Parse {
     }
 
     private parseBinaryOp(s: string, op: string, fn: (l: Roll, r: Roll) => Roll): Roll | undefined {
-        let m = s.match(`^(?<left>.*)${op}(?<right>.*)$`);
+        let re = new RegExp(`^(?<left>.*)${op}(?<right>.*)$`)
+        let m = s.match(re);
         if (m) {
             // TODO add error checking
             let L = this._parse(m.groups?.left || "");
@@ -92,9 +93,10 @@ export class Parse {
         // ****         Sum comes before Prod         **** //
 
         // Problems
-        // * Cond, Div, and Mod aren't covered
+        // * Abs, Cond, Div, and Mod aren't covered
         // * Subtraction is totally broken
         // * Cond is actually broken since it still requires a Coin condition
+        // * Abs is broken because it gets interpreted as Or
 
         // Match reducers
         let R: Roll;
@@ -135,13 +137,6 @@ export class Parse {
         }
 
         let m: RegExpMatchArray | null;
-
-        // Match Abs
-        if (m = s.match(/^|(?<infix>.*)|$/)) {
-            // TODO add error checking
-            let R = this._parse(m.groups?.infix || "");
-            return new Abs(R as Roll);
-        }
 
         // Match Neg
         if (m = s.match(/^-(?<infix>.*$)/)) {
