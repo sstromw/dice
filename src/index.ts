@@ -87,8 +87,14 @@ const PARSE_TESTS = [
     "d100",
     "d2",
     "2d6",
+    "2",
     "d6 + d4",
     "(d6 + d4)",
+    "d6 + 2",
+    "d6 + 2(2)",
+    "d6 + 2*2*2",
+    "-d6",
+    "-2d6 + 2",
     "2(d6+d4)",
     "2(d6+d4) + d4",
     "max(d6,d4)",
@@ -101,7 +107,7 @@ const PARSE_TESTS = [
 
 for (let s of PARSE_TESTS) {
     let x = new Parse(s).parse();
-    console.log(x);
+    console.log(`${x}`);
 }
 
 

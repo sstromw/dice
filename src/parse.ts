@@ -49,6 +49,7 @@ export class Parse {
                     R = new Mult(n, R as Roll);
                 }
                 if (m.groups?.prefix == "g") {
+                    // TODO you should be able to write G(1/100)
                     let x = +m.groups?.infix;
                     R = new Geometric(x);
                 }
@@ -61,28 +62,94 @@ export class Parse {
         }
     }
 
+    private parseOp(s: string, operator: string, fn: (val: Roll[]) => Roll): Roll | undefined {
+        let operands = s.split(operator)
+        if (operands.length > 1) {
+            let rolls = operands.map((t) => this._parse(t));
+            // TODO add error checking
+            return fn(rolls as Roll[]);
+        }
+        return undefined;
+    }
+
+    private parseBinaryOp(s: string, op: string, fn: (l: Roll, r: Roll) => Roll): Roll | undefined {
+        let m = s.match(`^(?<left>.*)${op}(?<right>.*)$`);
+        if (m) {
+            // TODO add error checking
+            let L = this._parse(m.groups?.left || "");
+            let R = this._parse(m.groups?.right || "");
+            return fn(L as Roll, R as Roll);
+        }
+        return undefined;
+    }
+
     private _parse(s: string): Roll | Error {
         if (s.match(/[()]/)) {
             console.log(`Warning: no parentheticals in _parse: ${s}`)
         }
+        
+        // **** Lower precedence should be at the top **** //
+        // ****         Sum comes before Prod         **** //
 
-        // Match Sum
-        let summands = s.split('+');
-        if (summands.length > 1) {
-            let rolls = summands.map((t) => this._parse(t));
-            // TODO Needs error checking
-            return new Sum(rolls as Roll[]);
+        // Problems
+        // * Cond, Div, and Mod aren't covered
+        // * Subtraction is totally broken
+
+        // Match reducers
+        let R: Roll;
+        if (R = this.parseOp(s, "+", (rs) => new Sum(rs)) as Roll) {
+            return R;
+        }
+        if (R = this.parseOp(s, "*", (rs) => new Prod(rs)) as Roll) {
+            return R;
+        }
+        if (R = this.parseOp(s, "<<", (rs) => new Min(rs)) as Roll) {
+            return R;
+        }
+        if (R = this.parseOp(s, ">>", (rs) => new Max(rs)) as Roll) {
+            return R;
+        }
+        if (R = this.parseOp(s, "|", (rs) => new Or(rs)) as Roll) {
+            return R;
         }
 
-        let factors = s.split('*');
-        if (factors.length > 1) {
-            let rolls = factors.map((t) => this._parse(t));
-            // TODO Needs error checking
-            return new Prod(rolls as Roll[]);
+        // Match binary operators
+        if (R = this.parseBinaryOp(s, "=", (l,r) => new Eq(l,r)) as Roll) {
+            return R;
+        }
+        if (R = this.parseBinaryOp(s, "!=", (l,r) => new Ne(l,r)) as Roll) {
+            return R;
+        }
+        if (R = this.parseBinaryOp(s, "<", (l,r) => new Lt(l,r)) as Roll) {
+            return R;
+        }
+        if (R = this.parseBinaryOp(s, "<=", (l,r) => new Le(l,r)) as Roll) {
+            return R;
+        }
+        if (R = this.parseBinaryOp(s, ">", (l,r) => new Gt(l,r)) as Roll) {
+            return R;
+        }
+        if (R = this.parseBinaryOp(s, ">=", (l,r) => new Ge(l,r)) as Roll) {
+            return R;
+        }
+
+        let m: RegExpMatchArray | null;
+
+        // Match Abs
+        if (m = s.match(/^|(?<infix>.*)|$/)) {
+            // TODO add error checking
+            let R = this._parse(m.groups?.infix || "");
+            return new Abs(R as Roll);
+        }
+
+        if (m = s.match(/^-(?<infix>.*$)/)) {
+            // TODO add error checking
+            let R = this._parse(m.groups?.infix || "");
+            return new Neg(R as Roll);
         }
 
         // Match D
-        let m = s.match(/^(?<n_rolls>[0-9]*)d(?<roll_size>[0-9]+)$/);
+        m = s.match(/^(?<n_rolls>[0-9]*)d(?<roll_size>[0-9]+)$/);
         if (m && m.groups?.roll_size) {
             let n = +m.groups?.roll_size;
             let die = n == 2 ? new Coin() : new D(n);
@@ -92,11 +159,16 @@ export class Parse {
             return die;
         }
 
+        // Match Const
+        if (m = s.match(/^([0-9]*)$/)) {
+            return new Const(+s);
+        }
+
         // Match token
-        m = s.match(/^x_[0-9]*$/);
-        if (m) {
+        if (m = s.match(/^x_[0-9]*$/)) {
             return this.tokens.get(s) || Error(`unknown symbol: ${s}`);
         }
+
         return new Error(`unknown symbol: ${s}`);
     }
 

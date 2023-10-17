@@ -10,12 +10,9 @@ export class Coin extends Roll {
         this.p = p;
     }
 
-    toString() { return `B(${this.p})`; }  // B for Bernoulli
+    toString() { return `C(${this.p})`; }  // should be B for Bernoulli
 
-    roll() {
-        // I feel like I shouldn't need the "? 1 : 0"
-        return Math.random() < this.p ? 1 : 0;
-    }
+    roll() { return Math.random() < this.p ? 1 : 0; }
 
     density() {
         return new DefaultMap([[0, 1-this.p], [1, this.p]])
