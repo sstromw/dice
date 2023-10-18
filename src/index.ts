@@ -1,127 +1,58 @@
-import { Abs, Coin, Cond, Const, D, Eq, Div, Le, Lt, Ge, Geometric, Gt, Max, Min, Mod, Mult, Ne, Neg, Or, Prod, Roll, Sum } from "./dice";
+import { Roll } from "./dice";
 import { Parse } from "./parse"
 
-// const D6   = new D(6);
-// const TWO  = new Const(2);
-// const COIN = new Coin();
-// const TESTS = [
-//     D6,
-//     TWO,
+const INPUT = document.querySelector<HTMLInputElement>("#input");
+const BUTTON = document.querySelector<HTMLButtonElement>("#button");
+const LIST = document.querySelector<HTMLUListElement>("#list");
 
-//     new Sum([D6,D6,TWO]),
-//     new Mult(3, D6),
-//     new Prod([D6,TWO]),
-//     new Min([D6,D6,D6]),
-
-//     new Max([D6,D6,D6]),
-    
-//     new Neg(D6),
-//     new Abs(new Neg(D6)),
-//     new Mod(D6, 3),
-//     new Div(D6, 2),
-
-//     new Mult(10, COIN),
-//     new Cond(COIN, D6, TWO),
-//     new Or([D6, TWO, COIN]),
-
-//     new Eq(D6, TWO),
-//     new Ne(D6, TWO),
-//     new Lt(D6, TWO),
-//     new Le(D6, TWO),
-//     new Gt(D6, TWO),
-//     new Ge(D6, TWO),
-
-//     new Geometric(1/2),
-//     new Geometric(1/100),
-// ]
-
-function log_roll(roll: Roll): string {
-    let s = "";
-    let append = (x: string) => (s += x + "<br>");
-    append(roll.toString());
-    append(`mean: ${roll.mean().toFixed(4)}`);
-    append(`var : ${roll.variance().toFixed(4)}`);
-    append(`--------------`);
-    for (let [x,p] of roll.sample_space()) {
-        if (p > 0.00005) {
-            append(`${x}\t${p.toFixed(4)}`);
-        }
-    }
-    return s;
+if (INPUT == null || BUTTON == null || LIST == null) {
+    throw new Error("fix ya ids");
 }
 
-function log_deciles(roll: Roll, buckets = [0.1, 0.2, 0.3,
-                                            0.4, 0.5, 0.6,
-                                            0.7, 0.8, 0.9]) {
-    let i = 0;
-    console.log(roll.toString());
-    for(let [x,_] of roll.sample_space()) {
-        if (roll.cdf(x) > buckets[i]) {
-            console.log(`${Math.round(100*buckets[i])}%\t${x}`);
-            if (++i == buckets.length) return;
-        }
-    }
+var rolls = Array<Roll>();
+var roll_id = 0;
+
+function isUnique(r: Roll) {
+    rolls.forEach((s) => {
+        // TODO this is bad, actually
+        // Mult(2, Const(2)) and Const(22) produce the same string
+        if (s.toString() == r.toString()) return false;
+    });
+    return true
 }
 
-function verify(roll: Roll, verbose=false, N=100000): boolean {
-    let counts: Map<number, number> = new Map();
-    for (let i = 0; i<N; i++) {
-        let x = roll.roll();
-        counts.set(x, 1 + (counts.get(x) || 0));
-    }
-    if (verbose) {
-        for (let [k,v] of counts) {
-            console.log(`${k}\t:\t${v/N}\t${roll.pdf(k)}`);
-        }
-    }
-    let diffs = Array.from(counts).map(([k,v]) => Math.abs(v/N - roll.pdf(k)));
-    let max = diffs.reduce((a,b) => Math.max(a,b), diffs[0]);
-    if (verbose && max > 0.005) {
-        console.log(`Discrepancy on ${roll.toString()}: ${max}`);
-    }
-    return max < 0.005;
+function rollDie(this: GlobalEventHandlers, ev: MouseEvent) {
+    let button = ev.currentTarget as HTMLButtonElement;
+    let m = button.id.match("roll-(?<id>[0-9]*)");
+    // Don't know why this has to be this way
+    let n = +(m?.groups?.id || "0");
+    let r = rolls[n];
+    let elem = document.getElementById(`display-${n}`);
+    if (elem == null) { throw new Error("fix ya ids"); }
+    elem.innerHTML = r.roll().toString();
 }
 
-// const PARSE_TESTS = [
-//     "d6",
-//     "d100",
-//     "d2",
-//     "2d6",
-//     "2",
-//     "d6 + d4",
-//     "(d6 + d4)",
-//     "d6 + 2",
-//     "d6 + 2(2)",
-//     "d6 + 2*2*2",
-//     "-d6",
-//     "-2d6 + 2",
-//     "2(d6+d4)",
-//     "2(d6+d4) + d4",
-//     "max(d6,d4)",
-//     "mAX(d6,   D4)",
-//     "(d6 + (d2 + d3))",
-//     "g(0.1)",
-//     "c(0.25)",
-//     "c()",
-// ]
-
-// for (let s of PARSE_TESTS) {
-//     let x = new Parse(s).parse();
-//     console.log(`${x}`);
-// }
-
-
-function buttonpress() {
-    let str = (document.getElementById('field') as HTMLInputElement).value;
+function addRoll() {
+    let str = document.querySelector<HTMLInputElement>('#input')?.value;
     if (str) {
-        let R = new Parse(str).parse();
-        if (R) {
-            let textbox = document.getElementById('textbox') as HTMLParagraphElement;
-            let roll_log = log_roll(R as Roll);
-            roll_log = "<tt>" + roll_log + "<tt>";
-            textbox.innerHTML = roll_log;
+        let R = new Parse(str).parse() as Roll;
+        if (R && isUnique(R)) {
+            let li = document.createElement("li");
+            li.innerHTML = `
+                <div class="list-item-div" id="li-${roll_id}">
+                    <div>${R}</div>
+                    <button id="roll-${roll_id}">Roll</button>
+                    <p id="display-${roll_id}"></p>
+                </div>
+            `;
+            LIST?.append(li);
+            let button = document.getElementById(`roll-${roll_id}`) as HTMLButtonElement;
+            if (button == null) { throw new Error("fix ya ids"); }
+            button.onclick = rollDie;
+            rolls.push(R);
+            roll_id++;
         }
     }
 }
 
-document.getElementById("button")?.addEventListener("click", buttonpress);
+BUTTON.onclick = addRoll;
