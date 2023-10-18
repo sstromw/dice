@@ -13,12 +13,12 @@ var rolls = Array<Roll>();
 var roll_id = 0;
 
 function isUnique(r: Roll) {
-    rolls.forEach((s) => {
+    for (let s of rolls) {
         // TODO this is bad, actually
         // Mult(2, Const(2)) and Const(22) produce the same string
-        if (s.toString() == r.toString()) return false;
-    });
-    return true
+        if (s.toString() === r.toString()) { return false; }
+    }
+    return true;
 }
 
 function rollDie(this: GlobalEventHandlers, ev: MouseEvent) {
@@ -36,6 +36,7 @@ function addRoll() {
     let str = document.querySelector<HTMLInputElement>('#input')?.value;
     if (str) {
         let R = new Parse(str).parse() as Roll;
+        if (isUnique(R)) { console.log("gah"); }
         if (R && isUnique(R)) {
             let li = document.createElement("li");
             li.innerHTML = `
