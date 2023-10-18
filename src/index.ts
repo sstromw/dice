@@ -9,11 +9,11 @@ if (INPUT == null || BUTTON == null || LIST == null) {
     throw new Error("fix ya ids");
 }
 
-var rolls = Array<Roll>();
+var rolls = new Map<number, Roll>();
 var roll_id = 0;
 
 function isUnique(r: Roll) {
-    for (let s of rolls) {
+    for (let s of rolls.values()) {
         // TODO this is bad, actually
         // Mult(2, Const(2)) and Const(22) produce the same string
         if (s.toString() === r.toString()) { return false; }
@@ -24,33 +24,50 @@ function isUnique(r: Roll) {
 function rollDie(this: GlobalEventHandlers, ev: MouseEvent) {
     let button = ev.currentTarget as HTMLButtonElement;
     let m = button.id.match("roll-(?<id>[0-9]*)");
-    // Don't know why this has to be this way
-    let n = +(m?.groups?.id || "0");
-    let r = rolls[n];
+    if (m?.groups?.id == null) { throw new Error("fix ya ids"); }
+    let n = +m.groups.id;
     let elem = document.getElementById(`display-${n}`);
     if (elem == null) { throw new Error("fix ya ids"); }
-    elem.innerHTML = r.roll().toString();
+    elem.innerHTML = rolls.get(n)?.roll().toString() || "";
+}
+
+function deleteRoll(this: GlobalEventHandlers, ev: MouseEvent) {
+    let button = ev.currentTarget as HTMLButtonElement;
+    let m = button.id.match("delete-(?<id>[0-9]*)");
+    if (m?.groups?.id == null) { throw new Error("fix ya ids"); }
+    let n = +m.groups.id;
+    rolls.delete(n);
+    document.getElementById(`li-${n}`)?.remove();
 }
 
 function addRoll() {
     let str = document.querySelector<HTMLInputElement>('#input')?.value;
     if (str) {
         let R = new Parse(str).parse() as Roll;
-        if (isUnique(R)) { console.log("gah"); }
         if (R && isUnique(R)) {
             let li = document.createElement("li");
+            li.id = `li-${roll_id}`
             li.innerHTML = `
-                <div class="list-item-div" id="li-${roll_id}">
-                    <div>${R}</div>
-                    <button id="roll-${roll_id}">Roll</button>
-                    <p id="display-${roll_id}"></p>
+                <div class="list-item-div">
+                    <div class="column">
+                        <div>${R}</div>
+                        <button id="roll-${roll_id}">Roll</button>
+                        <p id="display-${roll_id}"></p>
+                    </div>
+                    <div class="column">
+                        <button class="delete" id="delete-${roll_id}">Delete</button>
+                    </div>
                 </div>
             `;
             LIST?.append(li);
-            let button = document.getElementById(`roll-${roll_id}`) as HTMLButtonElement;
-            if (button == null) { throw new Error("fix ya ids"); }
-            button.onclick = rollDie;
-            rolls.push(R);
+            let rollButton = document.getElementById(`roll-${roll_id}`) as HTMLButtonElement;
+            let deleteButton = document.getElementById(`delete-${roll_id}`) as HTMLButtonElement;
+            if (rollButton == null || deleteButton == null) {
+                throw new Error("fix ya ids");
+            }
+            rollButton.onclick = rollDie;
+            deleteButton.onclick = deleteRoll;
+            rolls.set(roll_id, R);
             roll_id++;
         }
     }

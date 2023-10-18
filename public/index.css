@@ -10,3 +10,12 @@ ul {
     border-style: solid;
     border-color: black;
 }
+
+.column {
+    float: left;
+    width: 50%;
+}
+
+.delete {
+    float: right;
+}
