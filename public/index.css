@@ -1,19 +1,29 @@
+body {
+    background-color: #404040;
+}
+
 ul {
     list-style-type: none;;
     margin: 0;
     padding: 0;
 }
 
+button {
+    background-color: gray;
+}
+
 .list-item-div {
     width: auto;
-    height: 100px;
+    margin: 4px;
+    padding: 4px;
+    height: 80px;
     border-style: solid;
     border-color: black;
 }
 
 .column {
     float: left;
-    width: 50%;
+    width: 25%;
 }
 
 .delete {

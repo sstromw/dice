@@ -49,8 +49,13 @@ function addRoll() {
                 <div class="list-item-div">
                     <div class="column">
                         <div>${R}</div>
-                        <button id="roll-${roll_id}">Roll</button>
-                        <p id="display-${roll_id}"></p>
+                    </div>
+                    <div class="column">
+                        <button class="roll-button" id="roll-${roll_id}">Roll</button>
+                        <p class="roll-display" id="display-${roll_id}"></p>
+                    </div>
+                    <div class="column">
+                        <button class="show-stats" id="show-stats-${roll_id}">Show Stats</button>
                     </div>
                     <div class="column">
                         <button class="delete" id="delete-${roll_id}">Delete</button>
