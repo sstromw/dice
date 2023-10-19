@@ -3,6 +3,7 @@ import { DefaultMap, SampleSpace } from "./sample_space";
 export abstract class Roll {
     abstract toString(): string;
     abstract roll(): number;
+    abstract eq(other: Roll): boolean;
 
     // Set up lazy pdf evaluation since it's *usually* finite
     protected abstract density(): DefaultMap;
@@ -50,6 +51,8 @@ export class D extends Roll {
         return 1 + Math.floor(Math.random() * this.n);
     }
 
+    eq(t: D) { return t.n == this.n; }
+
     density() {
         let M = new DefaultMap();
         for (let k = 1; k <= this.n; k++) {
@@ -70,6 +73,7 @@ export class Const extends Roll {
 
     toString() { return this.val.toString(); }
     roll() { return this.val; }
+    eq(t: Const) { return t.val == this.val; }
     density() { return new DefaultMap([[this.val, 1]]); }
     mean() { return this.val; }
     variance() { return 0; }
@@ -89,6 +93,8 @@ export class Geometric extends Roll {
         for(i=1; Math.random() > this.p; i++);
         return i;
     }
+
+    eq(t: Geometric) { return t.p == this.p; }
 
     density() { return new DefaultMap(); }  // This should never be called
     sample_space() {

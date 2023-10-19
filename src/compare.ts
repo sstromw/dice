@@ -14,13 +14,17 @@ abstract class CompareOp extends Roll {
     }
     
     toString() { return `${this.left} ${this.symbol} ${this.right}`; }
-
     roll() { return this.op(this.left.roll(), this.right.roll()) ? 1 : 0; }
 }
 
 export class Eq extends CompareOp {
     constructor(readonly left: Roll, readonly right: Roll) {
         super((x,y) => x == y, left, right, "=");
+    }
+
+    eq(t: Eq) {
+        return (this.left.eq(t.left) && this.right.eq(t.right))
+            || (this.right.eq(t.left) && this.left.eq(t.right));
     }
 
     density() {
@@ -38,6 +42,11 @@ export class Ne extends CompareOp {
         super((x,y) => x != y, left, right, "!=");
     }
 
+    eq(t: Ne) {
+        return (this.left.eq(t.left) && this.right.eq(t.right))
+            || (this.right.eq(t.left) && this.left.eq(t.right));
+    }
+
     density() {
         let A = new DefaultMap();
         for (let [k,v] of this.left.sample_space()) {
@@ -51,6 +60,10 @@ export class Ne extends CompareOp {
 export class Gt extends CompareOp {
     constructor(readonly left: Roll, readonly right: Roll) {
         super((x,y) => x > y, left, right, ">");
+    }
+
+    eq(t: Gt) {
+        return this.left.eq(t.left) && this.right.eq(t.right);
     }
 
     density() {
@@ -68,6 +81,10 @@ export class Le extends CompareOp {
         super((x,y) => x <= y, left, right, "<=");
     }
 
+    eq(t: Le) {
+        return this.left.eq(t.left) && this.right.eq(t.right);
+    }
+
     density() {
         let A = new DefaultMap();
         for (let [k,v] of this.left.sample_space()) {
@@ -83,6 +100,10 @@ export class Lt extends CompareOp {
         super((x,y) => x < y, left, right, "<");
     }
 
+    eq(t: Lt) {
+        return this.left.eq(t.left) && this.right.eq(t.right);
+    }
+
     density() {
         let A = new DefaultMap();
         for (let [k,v] of this.left.sample_space()) {
@@ -96,6 +117,10 @@ export class Lt extends CompareOp {
 export class Ge extends CompareOp {
     constructor(readonly left: Roll, readonly right: Roll) {
         super((x,y) => x >= y, left, right, ">=");
+    }
+
+    eq(t: Ge) {
+        return this.left.eq(t.left) && this.right.eq(t.right);
     }
 
     density() {

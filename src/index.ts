@@ -14,9 +14,7 @@ var roll_id = 0;
 
 function isUnique(r: Roll) {
     for (let s of rolls.values()) {
-        // TODO this is bad, actually
-        // Mult(2, Const(2)) and Const(22) produce the same string
-        if (s.toString() === r.toString()) { return false; }
+        if (s.eq(r)) { return false; }
     }
     return true;
 }

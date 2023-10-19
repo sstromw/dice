@@ -14,6 +14,8 @@ export class Coin extends Roll {
 
     roll() { return Math.random() < this.p ? 1 : 0; }
 
+    eq(t: Coin) { return this.p == t.p; }
+
     density() {
         return new DefaultMap([[0, 1-this.p], [1, this.p]])
     }
@@ -40,6 +42,12 @@ export class Cond extends Roll {
         return this.condition.roll() ? 
                this.success.roll() :
                this.failure.roll();
+    }
+
+    eq(t: Cond) {
+        return this.condition.eq(t.condition)
+            && this.success.eq(t.success)
+            && this.failure.eq(t.failure);
     }
 
     mean() {
@@ -76,6 +84,11 @@ export class Or extends Roll {
     roll() {
         let n = Math.floor(Math.random() * this.length);
         return this.rolls[n].roll();
+    }
+
+    eq(t: Or) {
+        throw new Error("not implemented");
+        return false;
     }
 
     density() {
