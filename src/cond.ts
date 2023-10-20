@@ -1,31 +1,5 @@
-import { Roll } from "./roll";
+import { Roll, Coin } from "./roll";
 import { DefaultMap, SampleSpace } from "./sample_space";
-
-export class Coin extends Roll {
-    constructor(readonly p: number = 0.5) {
-        super();
-        if (p < 0 || p > 1) {
-            throw new Error("probability out of bounds: " + p);
-        }
-        this.p = p;
-    }
-
-    toString() { return `C(${this.p})`; }  // should be B for Bernoulli
-
-    roll() { return Math.random() < this.p ? 1 : 0; }
-
-    eq(t: Coin) { return this.p == t.p; }
-
-    density() {
-        return new DefaultMap([[0, 1-this.p], [1, this.p]])
-    }
-
-    mean() { return this.p; }
-    variance() { return this.p * (1 - this.p); }
-    median() { return this.p <= 0.5 ? 0 : 1; }
-
-    inverse_cdf(q: number) { return q >= this.p ? 1 : 0; }
-}
 
 export class Cond extends Roll {
     constructor(readonly condition: Coin,
@@ -106,5 +80,137 @@ export class Or extends Roll {
 
     mean() {
         return this.rolls.reduce((a,r) => a+r.roll(), 0) / this.length;
+    }
+}
+
+abstract class CompareOp extends Roll {
+    constructor(readonly op: (x: number, y: number) => boolean,
+                readonly left: Roll,
+                readonly right: Roll,
+                readonly symbol: string) {
+        super();
+        this.op = op;
+        this.left = left;
+        this.right = right;
+        this.symbol = symbol;
+    }
+    
+    toString() { return `${this.left} ${this.symbol} ${this.right}`; }
+    roll() { return this.op(this.left.roll(), this.right.roll()) ? 1 : 0; }
+}
+
+export class Eq extends CompareOp {
+    constructor(readonly left: Roll, readonly right: Roll) {
+        super((x,y) => x == y, left, right, "=");
+    }
+
+    eq(t: Eq) {
+        return (this.left.eq(t.left) && this.right.eq(t.right))
+            || (this.right.eq(t.left) && this.left.eq(t.right));
+    }
+
+    density() {
+        let A = new DefaultMap();
+        for (let [k,v] of this.left.sample_space()) {
+            A.increment(1, v * this.right.pmf(k));
+        }
+        A.set(0, 1-A.get(1));
+        return A;
+    }
+}
+
+export class Ne extends CompareOp {
+    constructor(readonly left: Roll, readonly right: Roll) {
+        super((x,y) => x != y, left, right, "!=");
+    }
+
+    eq(t: Ne) {
+        return (this.left.eq(t.left) && this.right.eq(t.right))
+            || (this.right.eq(t.left) && this.left.eq(t.right));
+    }
+
+    density() {
+        let A = new DefaultMap();
+        for (let [k,v] of this.left.sample_space()) {
+            A.increment(0, v * this.right.pmf(k));
+        }
+        A.set(1, 1-A.get(0));
+        return A;
+    }
+}
+
+export class Gt extends CompareOp {
+    constructor(readonly left: Roll, readonly right: Roll) {
+        super((x,y) => x > y, left, right, ">");
+    }
+
+    eq(t: Gt) {
+        return this.left.eq(t.left) && this.right.eq(t.right);
+    }
+
+    density() {
+        let A = new DefaultMap();
+        for (let [k,v] of this.left.sample_space()) {
+            A.increment(1, v * this.right.cdf(k-1));
+        }
+        A.set(0, 1-A.get(1));
+        return A;
+    }
+}
+
+export class Le extends CompareOp {
+    constructor(readonly left: Roll, readonly right: Roll) {
+        super((x,y) => x <= y, left, right, "<=");
+    }
+
+    eq(t: Le) {
+        return this.left.eq(t.left) && this.right.eq(t.right);
+    }
+
+    density() {
+        let A = new DefaultMap();
+        for (let [k,v] of this.left.sample_space()) {
+            A.increment(0, v * this.right.cdf(k-1));
+        }
+        A.set(1, 1-A.get(0));
+        return A;
+    }
+}
+
+export class Lt extends CompareOp {
+    constructor(readonly left: Roll, readonly right: Roll) {
+        super((x,y) => x < y, left, right, "<");
+    }
+
+    eq(t: Lt) {
+        return this.left.eq(t.left) && this.right.eq(t.right);
+    }
+
+    density() {
+        let A = new DefaultMap();
+        for (let [k,v] of this.left.sample_space()) {
+            A.increment(1, v * (1-this.right.cdf(k)));
+        }
+        A.set(0, 1-A.get(1));
+        return A;
+    }
+}
+
+export class Ge extends CompareOp {
+    constructor(readonly left: Roll, readonly right: Roll) {
+        super((x,y) => x >= y, left, right, ">=");
+    }
+
+    eq(t: Ge) {
+        return this.left.eq(t.left) && this.right.eq(t.right);
+    }
+
+    density() {
+        let A = new DefaultMap();
+        for (let [k,v] of this.left.sample_space()) {
+            A.increment(0, v * (1-this.right.cdf(k)));
+        }
+        A.set(1, 1-A.get(0));
+        return A;
     }
 }
