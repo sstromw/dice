@@ -29,14 +29,32 @@ export class Parse {
                 let rolls = params.map((t) => this._parse(t));
                 // Need an error check for parameters
                 switch(m.groups?.prefix) {
+                    case "sum":
+                        R = new Sum(rolls as Roll[]);
+                        break;
+                    case "prod":
+                        R = new Prod(rolls as Roll[]);
+                        break;
+                    case "max":
+                        R = new Max(rolls as Roll[]);
+                        break;
                     case "max":
                         R = new Max(rolls as Roll[]);
                         break;
                     case "min":
                         R = new Min(rolls as Roll[]);
                         break;
+                    case "or":
+                        R = new Or(rolls as Roll[]);
+                        break;
+                    // case "cond":
+                    //     // TODO fix error checking
+                    //     if (rolls.length != 3) {
+                    //         R = new Error("called cond without three parameters");
+                    //     } else {
+                    //         R = new Cond(rolls[0] as Roll, rolls[1] as Roll, rolls[2] as Roll);
+                    //     }
                     default:
-                        // TODO more
                         R = Error(`unknown symbol: ${m?.groups?.prefix}`)
                 }
             } else {
@@ -159,6 +177,11 @@ export class Parse {
         // Match Const
         if (m = s.match(/^([0-9]*)$/)) {
             return new Const(+s);
+        }
+
+        // Match Coin
+        if (m = s.match(/^c$/)) {
+            return new Coin();
         }
 
         // Match token
