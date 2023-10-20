@@ -92,6 +92,7 @@ export class Const extends Roll {
     mean() { return this.val; }
     variance() { return 0; }
     median() { return this.val; }
+    inverse_cdf(q: number) { return this.val; }
 }
 
 export class Geometric extends Roll {
@@ -118,6 +119,7 @@ export class Geometric extends Roll {
         }
         this._sample_space = new SampleSpace(
             (n) => n>0 ? Math.pow(1-this.p, n-1) * this.p: 0,
+            (n) => n>0 ? 1 - Math.pow(1-this.p, n) : 0
         )
         return this._sample_space;
     }
@@ -125,6 +127,10 @@ export class Geometric extends Roll {
     mean() { return 1/this.p; }
     variance() { return (1-this.p) / this.p**2; }
     median() { return Math.ceil(-1/Math.log2(1-this.p)); }
+
+    inverse_cdf(q: number) {
+        return Math.log(1-q) / Math.log(1-this.p);
+    }
 
     toString() { return `G(${this.p})`; }
 }
