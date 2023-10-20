@@ -101,4 +101,5 @@ integer, but for calculating statistics the library rounds off the last 0.0001%
 chance. Things might start to crunch a little if you use `1000(g(0.0001))`.
 
 The Poisson distribution is denoted `Pois(L)` for positive parameter `L`. This
-has no analog to physical dice.
+has no analog to physical dice. For numerical stability, this isn't actually
+implemented.
