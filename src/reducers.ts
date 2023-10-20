@@ -56,7 +56,7 @@ abstract class AssociativeReduction extends Roll {
             }
             A = new SampleSpace(b);
         }
-        return A._pdf as DefaultMap;
+        return A._pmf as DefaultMap;
     }
 
     toString() {

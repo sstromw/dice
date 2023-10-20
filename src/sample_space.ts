@@ -29,16 +29,16 @@ type Fn = DefaultMap | ((val: number) => number) | undefined;
 
 const EPSILON: number = 0.000001;
 export class SampleSpace implements Iterable<[number, number]> {
-    _pdf: Fn;
+    _pmf: Fn;
     _cdf: Fn;
     prefer_cdf: boolean;
     min_value: number;
 
-    constructor(pdf: Fn = undefined,
+    constructor(pmf: Fn = undefined,
                 cdf: Fn = undefined,
                 prefer_cdf = false,
                 min_value: number = 0) {
-        this._pdf = pdf;
+        this._pmf = pmf;
         this._cdf = cdf;
         this.prefer_cdf = prefer_cdf;
         this.min_value = min_value;
@@ -46,8 +46,8 @@ export class SampleSpace implements Iterable<[number, number]> {
             this.build_cdf();
             this.prefer_cdf = false;
         }
-        if (this._pdf == undefined) {
-            this.build_pdf();
+        if (this._pmf == undefined) {
+            this.build_pmf();
             this.prefer_cdf = true;
         }
     }
@@ -63,52 +63,52 @@ export class SampleSpace implements Iterable<[number, number]> {
             next: () => {
                 return {
                     done: this.cdf(i-1) > 1-EPSILON,
-                    value: [i++, this.pdf(i-1)] as [number, number]
+                    value: [i++, this.pmf(i-1)] as [number, number]
                 }
             }
         }
     }
 
     build_cdf(): void {
-        if (this._pdf == undefined) {
+        if (this._pmf == undefined) {
             throw new Error("constructing empty sample space");
-        } else if (typeof this._pdf === "function") {
+        } else if (typeof this._pmf === "function") {
             this._cdf = (n: number) => {
                 return Array.from(Array(n+1).keys())
-                            .reduce((a,b) => a+this.pdf(b), 0);
+                            .reduce((a,b) => a+this.pmf(b), 0);
             }
         } else {
             this._cdf = new DefaultMap();
-            let keys: number[] = Array.from(this._pdf.keys())
+            let keys: number[] = Array.from(this._pmf.keys())
                                       .sort((a,b)=>a-b);
             this.min_value = keys[0];
             let s = 0;
             for(let i=0; i<keys.length; i++) {
-                s += this.pdf(keys[i]);
+                s += this.pmf(keys[i]);
                 this._cdf.set(keys[i], s);
             }
         }
     }
     
-    build_pdf(): void {
+    build_pmf(): void {
         if (this._cdf == null) {
             throw new Error("constructing empty sample space");
         }
         else if (typeof this._cdf === "function") {
-            this._pdf = (n) => this.cdf(n) - this.cdf(n-1);
+            this._pmf = (n) => this.cdf(n) - this.cdf(n-1);
             return;
         } else {
-            this._pdf = new DefaultMap();
+            this._pmf = new DefaultMap();
             // TODO but kinda doubt this will ever be necessary.
             throw new Error("not implemented");
         }
     }
 
-    pdf(n: number) {
-        if (typeof this._pdf === "function") {
-            return this._pdf(n);
+    pmf(n: number) {
+        if (typeof this._pmf === "function") {
+            return this._pmf(n);
         }
-        return this._pdf?.get(n) || 0;
+        return this._pmf?.get(n) || 0;
     }
 
     cdf(n: number) {

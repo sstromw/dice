@@ -5,7 +5,7 @@ export abstract class Roll {
     abstract roll(): number;
     abstract eq(other: Roll): boolean;
 
-    // Set up lazy pdf evaluation since it's *usually* finite
+    // Set up lazy pmf evaluation since it's *usually* finite
     protected abstract density(): DefaultMap;
     _sample_space: SampleSpace | undefined;
     sample_space(): SampleSpace {
@@ -16,7 +16,7 @@ export abstract class Roll {
         return this._sample_space;
     }
 
-    pdf(n: number): number { return this.sample_space().pdf(n); }
+    pmf(n: number): number { return this.sample_space().pmf(n); }
     cdf(n: number): number { return this.sample_space().cdf(n); }
 
     // TODO figure out how to make this iterable too.

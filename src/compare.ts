@@ -30,7 +30,7 @@ export class Eq extends CompareOp {
     density() {
         let A = new DefaultMap();
         for (let [k,v] of this.left.sample_space()) {
-            A.increment(1, v * this.right.pdf(k));
+            A.increment(1, v * this.right.pmf(k));
         }
         A.set(0, 1-A.get(1));
         return A;
@@ -50,7 +50,7 @@ export class Ne extends CompareOp {
     density() {
         let A = new DefaultMap();
         for (let [k,v] of this.left.sample_space()) {
-            A.increment(0, v * this.right.pdf(k));
+            A.increment(0, v * this.right.pmf(k));
         }
         A.set(1, 1-A.get(0));
         return A;

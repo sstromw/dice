@@ -71,10 +71,10 @@ function verify(roll: Roll, verbose=false, N=100000): boolean {
     }
     if (verbose) {
         for (let [k,v] of counts) {
-            console.log(`${k}\t:\t${v/N}\t${roll.pdf(k)}`);
+            console.log(`${k}\t:\t${v/N}\t${roll.pmf(k)}`);
         }
     }
-    let diffs = Array.from(counts).map(([k,v]) => Math.abs(v/N - roll.pdf(k)));
+    let diffs = Array.from(counts).map(([k,v]) => Math.abs(v/N - roll.pmf(k)));
     let max = diffs.reduce((a,b) => Math.max(a,b), diffs[0]);
     if (verbose && max > 0.005) {
         console.log(`Discrepancy on ${roll.toString()}: ${max}`);
