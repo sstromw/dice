@@ -22,6 +22,7 @@ export class Coin extends Roll {
 
     mean() { return this.p; }
     variance() { return this.p * (1 - this.p); }
+    median() { return this.p <= 0.5 ? 0 : 1; }
 }
 
 export class Cond extends Roll {

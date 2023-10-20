@@ -8,6 +8,10 @@ ul {
     padding: 0;
 }
 
+p {
+    margin: 4px;
+}
+
 button {
     background-color: gray;
 }

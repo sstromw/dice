@@ -38,8 +38,18 @@ export abstract class Roll {
         return s;
     }
 
-    // TODO
-    median() { return 0; }
+    // So medians aren't unique, but shut up. We're returning the smallest median.
+    median() { return this.inverse_cdf(0.5); }
+
+    inverse_cdf(q: number): number {
+        if (q < 0 || q > 1) {
+            throw new Error(`invalid call to inverse_cdf: ${q}`);
+        }
+        for (let [k,_] of this.sample_space()) {
+            if (this.cdf(k) >= q) return k;
+        }
+        throw new Error("this shouldn't be possible");
+    }
 }
 
 export class D extends Roll {
@@ -66,6 +76,7 @@ export class D extends Roll {
 
     mean() { return (this.n + 1)/2; }
     variance() { return (this.n**2 - 1)/12; }
+    median() { return Math.round((this.n + (this.n % 2)) / 2); }
 }
 
 export class Const extends Roll {
@@ -80,6 +91,7 @@ export class Const extends Roll {
     density() { return new DefaultMap([[this.val, 1]]); }
     mean() { return this.val; }
     variance() { return 0; }
+    median() { return this.val; }
 }
 
 export class Geometric extends Roll {
@@ -112,6 +124,7 @@ export class Geometric extends Roll {
 
     mean() { return 1/this.p; }
     variance() { return (1-this.p) / this.p**2; }
+    median() { return Math.ceil(-1/Math.log2(1-this.p)); }
 
     toString() { return `G(${this.p})`; }
 }
