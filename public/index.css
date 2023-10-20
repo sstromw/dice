@@ -16,7 +16,6 @@ button {
     width: auto;
     margin: 4px;
     padding: 4px;
-    height: 80px;
     border-style: solid;
     border-color: black;
 }
@@ -28,4 +27,15 @@ button {
 
 .delete {
     float: right;
+}
+
+.row {
+    height: 80px;
+}
+
+.content {
+    padding: 0 18px;
+    height: 200px;
+    display: none;
+    overflow: hidden;
 }

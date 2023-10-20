@@ -37,6 +37,9 @@ export abstract class Roll {
         }
         return s;
     }
+
+    // TODO
+    median() { return 0; }
 }
 
 export class D extends Roll {
