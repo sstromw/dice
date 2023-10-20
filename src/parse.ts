@@ -13,7 +13,7 @@ export class Parse {
     }
 
     private addToken(s: string, r: Roll) {
-        let key = `x_${this.tokens.keys.length}`;
+        let key = `x_${this.tokens.size}`;
         this.tokens.set(key, r);
         this.tokenized_input = this.tokenized_input.replaceAll(s, key);
         // console.log(`${s} => ${key} -- ${this.tokenized_input}`);
@@ -149,7 +149,7 @@ export class Parse {
         m = s.match(/^(?<n_rolls>[0-9]*)d(?<roll_size>[0-9]+)$/);
         if (m && m.groups?.roll_size) {
             let n = +m.groups?.roll_size;
-            let die = n == 2 ? new Coin() : new D(n);
+            let die = new D(n);
             if (m.groups?.n_rolls) {
                 return new Mult(+(m.groups?.n_rolls || 1), die);
             }
