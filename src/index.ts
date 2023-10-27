@@ -68,7 +68,7 @@ function addRoll() {
     let str = document.querySelector<HTMLInputElement>('#input')?.value;
     if (str) {
         let R = new Parse(str).parse() as Roll;
-        if (R && isUnique(R)) {
+        if (R) {
             let li = document.createElement("li");
             li.id = `li-${roll_id}`
             li.innerHTML = `
