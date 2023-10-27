@@ -8,14 +8,15 @@ export class Parse {
     constructor(readonly s: string) {
         this.original_input = s;
         this.tokenized_input = 
-            this.original_input.toLowerCase().replaceAll(/\s/g, '');
+            this.original_input.toLowerCase().replace(/\s/g, '');
         this.tokens = new Map<string, Roll>();
     }
 
     private addToken(s: string, r: Roll) {
+        let re = /${s}/g
         let key = `x_${this.tokens.size}`;
         this.tokens.set(key, r);
-        this.tokenized_input = this.tokenized_input.replaceAll(s, key);
+        this.tokenized_input = this.tokenized_input.replace(re, key);
         // console.log(`${s} => ${key} -- ${this.tokenized_input}`);
     }
 
