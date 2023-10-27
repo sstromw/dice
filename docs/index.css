@@ -1,0 +1,45 @@
+body {
+    background-color: #404040;
+}
+
+ul {
+    list-style-type: none;;
+    margin: 0;
+    padding: 0;
+}
+
+p {
+    margin: 4px;
+}
+
+button {
+    background-color: gray;
+}
+
+.list-item-div {
+    width: auto;
+    margin: 4px;
+    padding: 4px;
+    border-style: solid;
+    border-color: black;
+}
+
+.column {
+    float: left;
+    width: 25%;
+}
+
+.delete {
+    float: right;
+}
+
+.row {
+    height: 80px;
+}
+
+.content {
+    padding: 0 18px;
+    height: 200px;
+    display: none;
+    overflow: hidden;
+}
