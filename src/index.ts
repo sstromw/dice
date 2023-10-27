@@ -48,7 +48,7 @@ function populateStats(id: number) {
     }
     
     const data = Array.from(R.sample_space());
-    new Chart(
+    const pmf_chart = new Chart(
       canvas,
       {
         type: 'bar',
@@ -60,6 +60,9 @@ function populateStats(id: number) {
               data: data.map(e => e[1])
             }
           ]
+        },
+        options: {
+            maintainAspectRatio: false
         }
       }
     );
