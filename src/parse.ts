@@ -13,11 +13,12 @@ export class Parse {
     }
 
     private addToken(s: string, r: Roll) {
-        let re = /${s}/g
         let key = `x_${this.tokens.size}`;
         this.tokens.set(key, r);
-        this.tokenized_input = this.tokenized_input.replace(re, key);
-        // console.log(`${s} => ${key} -- ${this.tokenized_input}`);
+        while (this.tokenized_input.includes(s)) {
+            this.tokenized_input = this.tokenized_input.replace(s, key);
+        }
+        console.log(`${s} => ${key} -- ${this.tokenized_input}`);
     }
 
     private tokenizeParentheticals(s: string): void {
