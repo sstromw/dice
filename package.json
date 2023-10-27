@@ -5,7 +5,6 @@
   "private": true,
   "scripts": {
     "build": "webpack",
-    "clean": "rimraf docs",
     "start": "npm run build && http-server docs/ -o . -c1"
   },
   "keywords": [],
