@@ -18,7 +18,24 @@ export class Parse {
         while (this.tokenized_input.includes(s)) {
             this.tokenized_input = this.tokenized_input.replace(s, key);
         }
-        console.log(`${s} => ${key} -- ${this.tokenized_input}`);
+        // console.log(`${s} => ${key} -- ${this.tokenized_input}`);
+    }
+
+    private parseProb(s: string): number {
+        let m;
+        if (m = s.match(/(?<num>[0-9]+)\/(?<den>[1-9]+[0-9]*)/)) {
+            let num = +m.groups?.num;
+            let den = +m.groups?.den;
+            console.log(`${num} / ${den}`);
+            if (den >= num) {
+                return num / den;
+            }
+        }
+        let x = +s;
+        if (x > 1) {
+            return 1 / x;
+        }
+        return x;
     }
 
     private tokenizeParentheticals(s: string): void {
@@ -70,11 +87,11 @@ export class Parse {
                 }
                 if (m.groups?.prefix == "g") {
                     // TODO you should be able to write G(1/100)
-                    let x = +m.groups?.infix;
+                    let x = this.parseProb(m.groups?.infix);
                     R = new Geometric(x);
                 }
                 if (m.groups?.prefix == "c") {
-                    let x = +m.groups?.infix || 0.5;
+                    let x = this.parseProb(m.groups?.infix) || 0.5;
                     R = new Coin(x);
                 }
                 this.addToken(m[0], R as Roll);
