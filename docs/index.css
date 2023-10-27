@@ -16,6 +16,12 @@ button {
     background-color: gray;
 }
 
+canvas {
+    background-color: white;
+    height: 100%;
+    width: 100%;
+}
+
 .list-item-div {
     width: auto;
     margin: 4px;

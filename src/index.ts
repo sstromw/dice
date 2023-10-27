@@ -1,5 +1,7 @@
 import { Roll } from "./dice";
-import { Parse } from "./parse"
+import { Parse } from "./parse";
+// TODO: Only import the necessary bar chart bits
+import { Chart } from "chart.js/auto";
 
 const INPUT = document.querySelector<HTMLInputElement>("#input");
 const BUTTON = document.querySelector<HTMLButtonElement>("#button");
@@ -40,13 +42,27 @@ function deleteRoll(this: GlobalEventHandlers, ev: MouseEvent) {
 
 function populateStats(id: number) {
     let R = rolls.get(id);
-    let meanP = document.getElementById(`mean-${id}`) as HTMLParagraphElement;
-    let medianP = document.getElementById(`median-${id}`) as HTMLParagraphElement;
-    if (R == null || meanP == null || medianP == null) {
+    let canvas = document.getElementById(`chart-${id}`) as HTMLCanvasElement;
+    if (R == null || canvas == null) {
         throw new Error("fix ya ids");
     }
-    meanP.textContent = "Mean: " + R.mean().toString();
-    medianP.textContent = "Median: " + R.median().toString();
+    
+    const data = Array.from(R.sample_space());
+    new Chart(
+      canvas,
+      {
+        type: 'bar',
+        data: {
+          labels: data.map(e => e[0]),
+          datasets: [
+            {
+              label: 'Probability',
+              data: data.map(e => e[1])
+            }
+          ]
+        }
+      }
+    );
 }
 
 function showStats(this: GlobalEventHandlers, ev: MouseEvent) {
@@ -89,8 +105,7 @@ function addRoll() {
                         </div>
                     </div>
                     <div class="content" id="stats-${roll_id}">
-                        <p id="mean-${roll_id}"></p>
-                        <p id="median-${roll_id}"></p>
+                        <canvas id="chart-${roll_id}"></canvas>
                     </div>
                 </div>
             `;
