@@ -47,7 +47,14 @@ function populateStats(id: number) {
         throw new Error("fix ya ids");
     }
     
-    const data = Array.from(R.sample_space());
+    let m = 0;
+    let data: [number, number][] = [];
+    for(let [_,p] of R.sample_space()) {
+        if (p > m) { m = p; }
+    }
+    for(let [k,p] of R.sample_space()) {
+        if (100*p > m) { data.push([k,p]); }
+    }
     const pmf_chart = new Chart(
       canvas,
       {
