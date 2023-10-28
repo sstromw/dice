@@ -26,7 +26,6 @@ export class Parse {
         if (m = s.match(/(?<num>[0-9]+)\/(?<den>[1-9]+[0-9]*)/)) {
             let num = +m.groups?.num;
             let den = +m.groups?.den;
-            console.log(`${num} / ${den}`);
             if (den >= num) {
                 return num / den;
             }
@@ -125,7 +124,7 @@ export class Parse {
         if (s.match(/[()]/)) {
             console.log(`Warning: no parentheticals in _parse: ${s}`)
         }
-        
+
         // **** Lower precedence should be at the top **** //
         // ****         Sum comes before Prod         **** //
 
@@ -136,9 +135,7 @@ export class Parse {
         // * Abs is broken because it gets interpreted as Or
 
         // Gross gross gross
-        console.log(s);
         s = s.replace(/([^+-])-/gi, '$1+-');
-        console.log(s);
 
         // Match reducers
         let R: Roll;
