@@ -39,7 +39,7 @@ arbitrary number of parameters, and each operator is associative.
 | Roll `R1` and `R2` and produce the higher of the two | `max(R1,R2)` | `R1 >> R2` |
 | Roll `R1` and `R2` and produce the lower of the two | `min(R1,R2)` | `R1 << R2` |
 | Choose one of the operands uniformly at random and roll that | `or(R1,R2,R3,R4)` | `R1 \| R2 \| R3 \| R4` |
-| Roll `T`. Roll `R1` if the result is greater than 0 and roll `R2` otherwise. Produce this second roll. | `cond(T,R1,R2)` | `T ? R1 : R2` |
+<!-- | Roll `T`. Roll `R1` if the result is greater than 0 and roll `R2` otherwise. Produce this second roll. | `cond(T,R1,R2)` | `T ? R1 : R2` | -->
 
 ### A note on multiplication
 

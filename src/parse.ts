@@ -200,7 +200,7 @@ export class Parse {
             return new Const(+s);
         }
 
-        // Match Coin
+        // Match fair Coin
         if (m = s.match(/^c$/)) {
             return new Coin();
         }
