@@ -135,6 +135,11 @@ export class Parse {
         // * Cond is actually broken since it still requires a Coin condition
         // * Abs is broken because it gets interpreted as Or
 
+        // Gross gross gross
+        console.log(s);
+        s = s.replace(/([^+-])-/gi, '$1+-');
+        console.log(s);
+
         // Match reducers
         let R: Roll;
         if (R = this.parseOp(s, "+", (rs) => new Sum(rs)) as Roll) {
