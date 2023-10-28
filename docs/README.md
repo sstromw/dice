@@ -1,3 +1,5 @@
+<!-- This should get embedded on the page in a dropdown with md-block -->
+
 # Dice Roller and Probability Calculator Webapp
 
 (made by Sam)
@@ -36,7 +38,7 @@ arbitrary number of parameters, and each operator is associative.
 | Roll `R1` and `R2` and produce the product | `prod(R1,R2)` | `R1 * R2` |
 | Roll `R1` and `R2` and produce the higher of the two | `max(R1,R2)` | `R1 >> R2` |
 | Roll `R1` and `R2` and produce the lower of the two | `min(R1,R2)` | `R1 << R2` |
-| Choose one of the operands uniformly at random and roll that | `or(R1,R2,R3,R4)` | `R1 | R2 | R3 | R4` |
+| Choose one of the operands uniformly at random and roll that | `or(R1,R2,R3,R4)` | `R1 \| R2 \| R3 \| R4` |
 | Roll `T`. Roll `R1` if the result is greater than 0 and roll `R2` otherwise. Produce this second roll. | `cond(T,R1,R2)` | `T ? R1 : R2` |
 
 ### A note on multiplication
@@ -53,8 +55,10 @@ valid but `2 2` is not)
 
 Rolling a coin produces either 0 or 1. A coin is denoted with `c(q)`, where
 0 <= `q` <= 1 is the probability of rolling a 1. Shorthands `c()` and `c` refer
-to a fair coin. A binomial distribution with `n` trials and probability `q` is
-simply `n(c(q))`.
+to a fair coin. Writing `c(1/100)` or `c(100)` is shorthand and will be
+converted to `c(0.01)`. Similarly, `c(3/4)` will be converted to `c(0.75)`.
+
+A binomial distribution with `n` trials and probability `q` is just `n(c(q))`.
 
 Comparison operators will also produce a 0 or 1. For instance, `R1 = R2` refers
 to a die that rolls `R1` and `R2` and produces 1 if and only if the results are
@@ -74,6 +78,7 @@ Comparison operators and coins are useful as the condition operator of `cond`.
 The geometric distribution is denoted `g(q)`. These can produce any positive
 integer, but for calculating statistics the library rounds off the last 0.0001%
 chance. Things might start to crunch a little if you use `1000(g(0.0001))`.
+Similar to coins, `g(4)`, `g(1/4)`, and `g(0.25)` are all equivalent.
 
 The Poisson distribution is denoted `Pois(L)` for positive parameter `L`. This
 has no analog to physical dice. For numerical stability, this isn't actually
