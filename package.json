@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "webpack",
+    "clean": "rimraf docs/bundle.js docs/bundle.js.LICENSE.txt",
     "start": "npm run build && http-server docs/ -o . -c1"
   },
   "keywords": [],
