@@ -1,4 +1,4 @@
-import { Abs, Coin, Cond, Const, D, Eq, Div, Le, Lt, Ge, Geometric, Gt, Max, Min, Mod, Mult, Ne, Neg, Or, Prod, Roll, Sum } from "./dice";
+import { Abs, Coin, Cond, Condition, Const, D, Eq, Div, Le, Lt, Ge, Geometric, Gt, Max, Min, Mod, Mult, Ne, Neg, Or, Prod, Roll, Sum } from "./dice";
 
 // The ugliest parser I ever did write
 export class Parse {
@@ -137,6 +137,17 @@ export class Parse {
         // Gross gross gross
         s = s.replace(/([^+-])-/gi, '$1+-');
 
+        let m: RegExpMatchArray | null;
+
+        // Match Cond
+        if (m = s.match(/(?<cond>.*)\?(?<succ>.*):(?<fail>.*)/)) {
+            console.log(m);
+            let x = this._parse(m.groups?.cond) as Condition;
+            let y = this._parse(m.groups?.succ) as Roll;
+            let z = this._parse(m.groups?.fail) as Roll;
+            return new Cond(x, y, z);
+        }
+
         // Match reducers
         let R: Roll;
         if (R = this.parseOp(s, "+", (rs) => new Sum(rs)) as Roll) {
@@ -174,8 +185,6 @@ export class Parse {
         if (R = this.parseBinaryOp(s, ">=", (l,r) => new Ge(l,r)) as Roll) {
             return R;
         }
-
-        let m: RegExpMatchArray | null;
 
         // Match Neg
         if (m = s.match(/^-(?<infix>.*$)/)) {

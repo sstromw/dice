@@ -95,32 +95,6 @@ export class Const extends Roll {
     inverse_cdf(q: number) { return this.val; }
 }
 
-export class Coin extends Roll {
-    constructor(readonly p: number = 0.5) {
-        super();
-        if (p < 0 || p > 1) {
-            throw new Error("probability out of bounds: " + p);
-        }
-        this.p = p;
-    }
-
-    toString() { return `C(${this.p})`; }  // should be B for Bernoulli
-
-    roll() { return Math.random() < this.p ? 1 : 0; }
-
-    eq(t: Coin) { return this.p == t.p; }
-
-    density() {
-        return new DefaultMap([[0, 1-this.p], [1, this.p]])
-    }
-
-    mean() { return this.p; }
-    variance() { return this.p * (1 - this.p); }
-    median() { return this.p <= 0.5 ? 0 : 1; }
-
-    inverse_cdf(q: number) { return q >= this.p ? 1 : 0; }
-}
-
 export class Geometric extends Roll {
     constructor(readonly p: number) {
         super();
