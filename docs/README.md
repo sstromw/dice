@@ -1,17 +1,6 @@
-<!-- This should get embedded on the page in a dropdown with md-block -->
-
 # Dice Roller and Probability Calculator Webapp
 
-(made by Sam)
-
-This project is incomplete, but these are the features I'm working on.
-
-- Roll arbitrary dice. Here "dice" means any discrete random variable
-    - uniform, binomial, geometric, Poisson, etc.
-    - sums, products, minimums, maximums, etc.
-- Calculate statistical information for your "dice".
-    - probability tables (TODO sam get plotly.js working)
-    - means, variances, medians, percentiles, entropy, etc.
+by Sam!
 
 ## Guide to dice notation
 

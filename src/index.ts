@@ -4,10 +4,16 @@ import { Parse } from "./parse";
 import { Chart } from "chart.js/auto";
 
 const INPUT = document.querySelector<HTMLInputElement>("#input");
-const BUTTON = document.querySelector<HTMLButtonElement>("#button");
+const ADD_BUTTON = document.querySelector<HTMLButtonElement>("#add-button");
+const OVERLAY_BUTTON = document.querySelector<HTMLButtonElement>("#overlay-button");
+const OVERLAY = document.querySelector<HTMLButtonElement>("#overlay");
 const LIST = document.querySelector<HTMLUListElement>("#list");
 
-if (INPUT == null || BUTTON == null || LIST == null) {
+if (INPUT == null
+    || ADD_BUTTON == null
+    || OVERLAY_BUTTON == null
+    || OVERLAY == null
+    || LIST == null) {
     throw new Error("fix ya ids");
 }
 
@@ -100,17 +106,17 @@ function addRoll() {
             li.innerHTML = `
                 <div class="list-item-div">
                     <div class="row">
-                        <div class="column">
+                        <div class="quarter-column">
                             <div>${R}</div>
                         </div>
-                        <div class="column">
+                        <div class="quarter-column">
                             <button class="roll-button" id="roll-${roll_id}">Roll</button>
                             <p class="roll-display" id="display-${roll_id}"></p>
                         </div>
-                        <div class="column">
+                        <div class="quarter-column">
                             <button class="show-stats" id="show-stats-${roll_id}">Show Stats</button>
                         </div>
-                        <div class="column">
+                        <div class="quarter-column">
                             <button class="delete" id="delete-${roll_id}">Delete</button>
                         </div>
                     </div>
@@ -135,4 +141,13 @@ function addRoll() {
     }
 }
 
-BUTTON.onclick = addRoll;
+function showOverlay () {
+    if (OVERLAY.style.display === "block") {
+        OVERLAY.style.display = "none";
+    } else {
+        OVERLAY.style.display = "block";
+    }
+}
+
+ADD_BUTTON.onclick = addRoll;
+OVERLAY_BUTTON.onclick = showOverlay;

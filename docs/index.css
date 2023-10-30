@@ -21,6 +21,13 @@ canvas {
     padding: 0;
 }
 
+#overlay {
+    background-color: lightgray;
+    z-index: 5;
+    float: right;
+    display: none;
+}
+
 .list-item-div {
     width: auto;
     margin: 4px;
@@ -29,7 +36,7 @@ canvas {
     border-color: black;
 }
 
-.column {
+.quarter-column {
     float: left;
     width: 25%;
 }

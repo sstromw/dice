@@ -8,12 +8,19 @@
     <base href="%PUBLIC_URL%" />
     <link rel="stylesheet" type="text/css" href="index.css" />
     <title>Dice App</title>
+    <script type="module" src="https://md-block.verou.me/md-block.js"></script>
     <script type="module" src="bundle.js"></script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <input id="input" type="text">
-    <button id="button">Add</button>
+    <div id="menu">
+        <input id="input" type="text">
+        <button id="add-button">Add</button>
+        <button id="overlay-button" style="float: right">?</button>
+    </div>
+    <div id="overlay">
+      <md-block src="README.md">Error: not found</md-block>
+    </div>
     <ul id="list"></ul>
   </body>
 </html>
