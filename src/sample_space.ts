@@ -104,6 +104,8 @@ export class SampleSpace implements Iterable<[number, number]> {
         }
     }
 
+    // Probability "mass" function and cumulative "distribution" function ugh
+
     pmf(n: number) {
         if (typeof this._pmf === "function") {
             return this._pmf(n);

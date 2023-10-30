@@ -1,50 +1,8 @@
 import { Roll } from "./roll";
 import { DefaultMap, SampleSpace } from "./sample_space";
 
-export abstract class Condition extends Roll {
-    sample_space(): SampleSpace {
-        if (this._sample_space !== undefined) {
-            return this._sample_space;
-        }
-        this._sample_space = new SampleSpace(this.density());
-        for (let [k,_] of this._sample_space) {
-            if (k != 0 && k != 1) {
-                // TODO maybe throw an actual error?
-                console.log(`W: condition ${this.toString()} rolled ${k}`);
-            }
-        }
-        return this._sample_space;
-    }
-}
-
-export class Coin extends Condition {
-    constructor(readonly p: number = 0.5) {
-        super();
-        if (p < 0 || p > 1) {
-            throw new Error("probability out of bounds: " + p);
-        }
-        this.p = p;
-    }
-
-    toString() { return `C(${this.p})`; }  // should be B for Bernoulli
-
-    roll() { return Math.random() < this.p ? 1 : 0; }
-
-    eq(t: Coin) { return this.p == t.p; }
-
-    density() {
-        return new DefaultMap([[0, 1-this.p], [1, this.p]])
-    }
-
-    mean() { return this.p; }
-    variance() { return this.p * (1 - this.p); }
-    median() { return this.p <= 0.5 ? 0 : 1; }
-
-    inverse_cdf(q: number) { return q >= this.p ? 1 : 0; }
-}
-
 export class Cond extends Roll {
-    constructor(readonly condition: Condition,
+    constructor(readonly condition: Roll,
                 readonly success: Roll,
                 readonly failure: Roll) {
         super();
@@ -70,14 +28,14 @@ export class Cond extends Roll {
     }
 
     mean() {
-        let p = this.sample_space().pmf(1);
+        let p = 1-this.sample_space().cdf(0);
         return p * this.success.mean() +
                (1-p) * this.failure.mean();
     }
 
     density() {
         let A = new DefaultMap();
-        let p = this.condition.sample_space().pmf(1);
+        let p = 1-this.condition.sample_space().cdf(0);
         for(let [k,v] of this.success.sample_space()) {
             A.increment(k, p*v);
         }

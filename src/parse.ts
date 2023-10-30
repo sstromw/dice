@@ -1,4 +1,4 @@
-import { Abs, Coin, Cond, Condition, Const, D, Eq, Div, Le, Lt, Ge, Geometric, Gt, Max, Min, Mod, Mult, Ne, Neg, Or, Prod, Roll, Sum } from "./dice";
+import { Abs, Coin, Cond, Const, D, Eq, Div, Le, Lt, Ge, Geometric, Gt, Max, Min, Mod, Mult, Ne, Neg, Or, Prod, Roll, Sum } from "./dice";
 
 // The ugliest parser I ever did write
 export class Parse {
@@ -141,8 +141,7 @@ export class Parse {
 
         // Match Cond
         if (m = s.match(/(?<cond>.*)\?(?<succ>.*):(?<fail>.*)/)) {
-            console.log(m);
-            let x = this._parse(m.groups?.cond) as Condition;
+            let x = this._parse(m.groups?.cond) as Roll;
             let y = this._parse(m.groups?.succ) as Roll;
             let z = this._parse(m.groups?.fail) as Roll;
             return new Cond(x, y, z);
