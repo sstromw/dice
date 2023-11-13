@@ -96,6 +96,12 @@ function showStats(this: GlobalEventHandlers, ev: MouseEvent) {
     populateStats(n);
 }
 
+function checkKey(e: KeyboardEvent) {
+    if (e.key === "Enter") {
+        addRoll();
+    }
+}
+
 function addRoll() {
     let str = document.querySelector<HTMLInputElement>('#input')?.value;
     if (str) {
@@ -137,6 +143,7 @@ function addRoll() {
             statsButton.onclick = showStats;
             rolls.set(roll_id, R);
             roll_id++;
+            INPUT.value = "";
         }
     }
 }
@@ -149,5 +156,6 @@ function showOverlay () {
     }
 }
 
+INPUT.onkeydown = checkKey;
 ADD_BUTTON.onclick = addRoll;
 OVERLAY_BUTTON.onclick = showOverlay;
