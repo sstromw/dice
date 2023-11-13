@@ -22,9 +22,11 @@ canvas {
 }
 
 #overlay {
+    position: absolute;
     background-color: lightgray;
-    z-index: 5;
-    float: right;
+    z-index: 1;
+    width: 75%;
+    right: 0;
     display: none;
 }
 
