@@ -103,10 +103,11 @@ function checkKey(e: KeyboardEvent) {
 }
 
 function addRoll() {
-    let str = document.querySelector<HTMLInputElement>('#input')?.value;
+    let str = INPUT.value;
+    INPUT.style.backgroundColor = "white";
     if (str) {
-        let R = new Parse(str).parse() as Roll;
-        if (R) {
+        let R = new Parse(str).parse();
+        if (R instanceof Roll) {
             let li = document.createElement("li");
             li.id = `li-${roll_id}`
             li.innerHTML = `
@@ -144,6 +145,10 @@ function addRoll() {
             rolls.set(roll_id, R);
             roll_id++;
             INPUT.value = "";
+        }
+        else if (R instanceof Error) {
+            console.log(R);
+            INPUT.style.backgroundColor = "red";
         }
     }
 }
