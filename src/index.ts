@@ -61,6 +61,7 @@ function populateStats(id: number) {
     for(let [k,p] of R.sample_space()) {
         if (100*p > m) { data.push([k,p]); }
     }
+    // TODO https://stackoverflow.com/questions/30256695/chart-js-drawing-an-arbitrary-vertical-line
     const pmf_chart = new Chart(
       canvas,
       {
@@ -132,6 +133,7 @@ function addRoll() {
                     </div>
                 </div>
             `;
+            // TODO add a space in "stats" to display quartiles or deciles
             LIST?.append(li);
             let rollButton = document.getElementById(`roll-${roll_id}`) as HTMLButtonElement;
             let deleteButton = document.getElementById(`delete-${roll_id}`) as HTMLButtonElement;
