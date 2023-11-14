@@ -107,7 +107,7 @@ export class Coin extends Roll {
         this.p = p;
     }
 
-    toString() { return `C(${this.p})`; }  // should be B for Bernoulli
+    toString() { return `C(${this.p.toFixed(2)})`; }  // should be B for Bernoulli
 
     roll() { return Math.random() < this.p ? 1 : 0; }
 
@@ -161,5 +161,5 @@ export class Geometric extends Roll {
         return Math.ceil(Math.log(1-q) / Math.log(1-this.p));
     }
 
-    toString() { return `G(${this.p})`; }
+    toString() { return `G(${this.p.toFixed(2)})`; }
 }
