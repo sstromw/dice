@@ -12,6 +12,7 @@ export class DefaultMap {
 
     get(k: number): number { return this.map.get(k) || 0; }
     set(k: number, v: number) {
+        if (v == 0) return;
         if (k < this.min_value) this.min_value = k;
         if (k > this.max_value) this.max_value = k;
         this.map.set(k,v);

@@ -56,8 +56,6 @@ canvas {
 }
 
 .content {
-    padding: 0;
-    height: 200px;
     display: none;
     overflow: hidden;
 }

@@ -55,11 +55,15 @@ function populateStats(id: number) {
     
     let m = 0;
     let data: [number, number][] = [];
-    for(let [_,p] of R.sample_space()) {
+    let S = R.sample_space();
+    for (let [_,p] of S) {
         if (p > m) { m = p; }
     }
-    for(let [k,p] of R.sample_space()) {
-        if (100*p > m) { data.push([k,p]); }
+    let k = S.min_value;
+    while (S.cdf(k-1) <= m/50) { k++; }
+    while (S.cdf(k-1) <= 1 - m/50) {
+        data.push([k, S.pmf(k)]);
+        k++;
     }
     // TODO https://stackoverflow.com/questions/30256695/chart-js-drawing-an-arbitrary-vertical-line
     const pmf_chart = new Chart(
@@ -162,6 +166,13 @@ function showOverlay () {
         OVERLAY.style.display = "block";
     }
 }
+
+document.addEventListener("keydown", (e) => {
+    if (document.activeElement !== INPUT && e.key == "/") {
+        e.preventDefault();
+        INPUT.focus();
+    }
+});
 
 INPUT.onkeydown = checkKey;
 ADD_BUTTON.onclick = addRoll;
