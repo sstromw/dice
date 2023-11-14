@@ -47,6 +47,10 @@ canvas {
     width: 25%;
 }
 
+.column {
+    float: left;
+}
+
 .delete {
     float: right;
 }

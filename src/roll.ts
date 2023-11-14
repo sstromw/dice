@@ -37,6 +37,9 @@ export abstract class Roll {
         }
         return s;
     }
+    stdev(): number {
+        return Math.sqrt(this.variance());
+    }
 
     // So medians aren't unique, but shut up. We're returning the smallest median.
     median() { return this.inverse_cdf(0.5); }
@@ -155,7 +158,7 @@ export class Geometric extends Roll {
     median() { return Math.ceil(-1/Math.log2(1-this.p)); }
 
     inverse_cdf(q: number) {
-        return Math.log(1-q) / Math.log(1-this.p);
+        return Math.ceil(Math.log(1-q) / Math.log(1-this.p));
     }
 
     toString() { return `G(${this.p})`; }

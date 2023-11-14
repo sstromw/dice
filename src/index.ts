@@ -17,12 +17,24 @@ if (INPUT == null
     throw new Error("fix ya ids");
 }
 
-var rolls = new Map<number, Roll>();
+interface ListItem {
+    roll: Roll,
+    rollButton: HTMLButtonElement,       // roll-${roll_id}
+    display: HTMLParagraphElement,       // display-${roll_id}
+    showStatsButton: HTMLButtonElement,  // show-stats-${roll_id}
+    deleteButton: HTMLButtonElement,     // delete-${roll_id}
+    statsDiv: HTMLDivElement,            // stats-div-${roll_id}
+    stats: HTMLParagraphElement,         // stats-${roll_id}
+    percentiles: HTMLParagraphElement,   // percentiles-${roll_id}
+    chart: HTMLCanvasElement,            // chart-${roll_id}
+}
+
+var ROLLS = new Map<number, ListItem>();
 var roll_id = 0;
 
 function isUnique(r: Roll) {
-    for (let s of rolls.values()) {
-        if (s.eq(r)) { return false; }
+    for (let s of ROLLS.values()) {
+        if (s.roll.eq(r)) { return false; }
     }
     return true;
 }
@@ -34,7 +46,7 @@ function rollDie(this: GlobalEventHandlers, ev: MouseEvent) {
     let n = +m.groups.id;
     let elem = document.getElementById(`display-${n}`);
     if (elem == null) { throw new Error("fix ya ids"); }
-    elem.innerHTML = rolls.get(n)?.roll().toString() || "";
+    elem.innerHTML = ROLLS.get(n)?.roll.roll().toString() || "";
 }
 
 function deleteRoll(this: GlobalEventHandlers, ev: MouseEvent) {
@@ -42,32 +54,28 @@ function deleteRoll(this: GlobalEventHandlers, ev: MouseEvent) {
     let m = button.id.match("delete-(?<id>[0-9]*)");
     if (m?.groups?.id == null) { throw new Error("fix ya ids"); }
     let n = +m.groups.id;
-    rolls.delete(n);
+    ROLLS.delete(n);
     document.getElementById(`li-${n}`)?.remove();
 }
 
 function populateStats(id: number) {
-    let R = rolls.get(id);
-    let canvas = document.getElementById(`chart-${id}`) as HTMLCanvasElement;
-    if (R == null || canvas == null) {
-        throw new Error("fix ya ids");
-    }
+    let item = ROLLS.get(id);
     
     let m = 0;
     let data: [number, number][] = [];
-    let S = R.sample_space();
+    let S = item.roll.sample_space();
     for (let [_,p] of S) {
         if (p > m) { m = p; }
     }
     let k = S.min_value;
-    while (S.cdf(k-1) <= m/50) { k++; }
+    while (S.cdf(k) < m/50) { k++; }
     while (S.cdf(k-1) <= 1 - m/50) {
         data.push([k, S.pmf(k)]);
         k++;
     }
     // TODO https://stackoverflow.com/questions/30256695/chart-js-drawing-an-arbitrary-vertical-line
     const pmf_chart = new Chart(
-      canvas,
+      item.chart,
       {
         type: 'bar',
         data: {
@@ -84,15 +92,22 @@ function populateStats(id: number) {
         }
       }
     );
+    let mean = item.roll.mean().toFixed(2);
+    let stdev = item.roll.stdev().toFixed(2);
+    item.stats.innerHTML = `&#956;: ${mean}<br>&#963;: ${stdev}`;
+
+    let buckets = [1, 10, 50, 90, 99];
+    for (let t of buckets) {
+        let x = item.roll.inverse_cdf(t/100);
+        item.percentiles.innerHTML += `${t}%\t: ${x}<br>`;
+    }
 }
 
 function showStats(this: GlobalEventHandlers, ev: MouseEvent) {
     let button = ev.currentTarget as HTMLButtonElement;
     let m = button.id.match("show-stats-(?<id>[0-9]*)");
-    if (m?.groups?.id == null) { throw new Error("fix ya ids"); }
     let n = +m.groups.id;
-    let elem = document.getElementById(`stats-${n}`) as HTMLDivElement;
-    if (elem == null) { throw new Error("fix ya ids"); }
+    let elem = ROLLS.get(n).statsDiv;
     if (elem.style.display === "block") {
       elem.style.display = "none";
     } else {
@@ -132,23 +147,40 @@ function addRoll() {
                             <button class="delete" id="delete-${roll_id}">Delete</button>
                         </div>
                     </div>
-                    <div class="content" id="stats-${roll_id}">
-                        <canvas id="chart-${roll_id}"></canvas>
+                    <div class="content" id="stats-div-${roll_id}">
+                        <div style="float: left; width: 10%;">
+                            <p id="stats-${roll_id}"></p>
+                        </div>
+                        <div style="float: left; width: 10%;">
+                            <p id="percentiles-${roll_id}"></p>
+                        </div>
+                        <div style="float: left; width: 80%;">
+                            <canvas id="chart-${roll_id}"></canvas>
+                        </div>
                     </div>
                 </div>
             `;
-            // TODO add a space in "stats" to display quartiles or deciles
             LIST?.append(li);
-            let rollButton = document.getElementById(`roll-${roll_id}`) as HTMLButtonElement;
-            let deleteButton = document.getElementById(`delete-${roll_id}`) as HTMLButtonElement;
-            let statsButton = document.getElementById(`show-stats-${roll_id}`) as HTMLButtonElement;
-            if (rollButton == null || deleteButton == null) {
-                throw new Error("fix ya ids");
-            }
-            rollButton.onclick = rollDie;
-            deleteButton.onclick = deleteRoll;
-            statsButton.onclick = showStats;
-            rolls.set(roll_id, R);
+            let item = {
+                roll: R,
+                rollButton: document.getElementById(`roll-${roll_id}`) as HTMLButtonElement,
+                display: document.getElementById(`display-${roll_id}`) as HTMLParagraphElement,
+                showStatsButton: document.getElementById(`show-stats-${roll_id}`) as HTMLButtonElement,
+                deleteButton: document.getElementById(`delete-${roll_id}`) as HTMLButtonElement,
+                statsDiv: document.getElementById(`stats-div-${roll_id}`) as HTMLDivElement,
+                stats: document.getElementById(`stats-${roll_id}`) as HTMLParagraphElement,
+                percentiles: document.getElementById(`percentiles-${roll_id}`) as HTMLParagraphElement,
+                chart: document.getElementById(`chart-${roll_id}`) as HTMLCanvasElement,
+            };
+            Object.entries(item).forEach(([k,v]) => { 
+                if (v === undefined) {
+                    throw new Error(`fix ya ids: ${k}`)
+                }
+            });
+            item.rollButton.onclick = rollDie;
+            item.deleteButton.onclick = deleteRoll;
+            item.showStatsButton.onclick = showStats;
+            ROLLS.set(roll_id, item);
             roll_id++;
             INPUT.value = "";
         }
