@@ -67,9 +67,10 @@ function populateStats(id: number) {
     for (let [_,p] of S) {
         if (p > m) { m = p; }
     }
+    if (m > 0.1) { m = 0.1; }
     let k = S.min_value;
-    while (S.cdf(k) < m/50) { k++; }
-    while (S.cdf(k-1) <= 1 - m/50) {
+    while (S.cdf(k) < m/20) { k++; }
+    while (S.cdf(k-1) < 1 - m/20) {
         data.push([k, S.pmf(k)]);
         k++;
     }
@@ -96,10 +97,10 @@ function populateStats(id: number) {
     let stdev = item.roll.stdev().toFixed(2);
     item.stats.innerHTML = `&#956;: ${mean}<br>&#963;: ${stdev}`;
 
-    let buckets = [1, 10, 50, 90, 99];
+    let buckets = [10, 25, 50, 75, 90];
     for (let t of buckets) {
         let x = item.roll.inverse_cdf(t/100);
-        item.percentiles.innerHTML += `${t}%\t: ${x}<br>`;
+        item.percentiles.innerHTML += `${t}%: ${x}<br>`;
     }
 }
 
