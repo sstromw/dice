@@ -70,5 +70,4 @@ chance. Things might start to crunch a little if you use `1000(g(0.0001))`.
 Similar to coins, `g(4)`, `g(1/4)`, and `g(0.25)` are all equivalent.
 
 The Poisson distribution is denoted `Pois(L)` for positive parameter `L`. This
-has no analog to physical dice. For numerical stability, this isn't actually
-implemented.
+has no analog to physical dice. Numerical stability is dicey for this one.

@@ -149,7 +149,7 @@ export class Geometric extends Roll {
         this._sample_space = new SampleSpace(
             (n) => n>0 ? Math.pow(1-this.p, n-1) * this.p: 0,
             (n) => n>0 ? 1 - Math.pow(1-this.p, n) : 0
-        )
+        );
         return this._sample_space;
     }
 
@@ -162,4 +162,72 @@ export class Geometric extends Roll {
     }
 
     toString() { return `G(${this.p.toPrecision(2)})`; }
+}
+
+export class Poisson extends Roll {
+    
+    constructor(readonly rate: number) {
+        super();
+        if (rate <= 0) {
+            throw new Error(`rate out of bounds: ${rate}`);
+        }
+        this.rate = rate;
+    }
+
+    _fact(n: number): number { return (n == 0) ? 1 : n * this._fact(n-1); }
+    roll() {
+        // If rate is high, use alternate strategy
+        if (this.rate > 30) {
+            let c = 0.767 - 3.36 / this.rate;
+            let beta = Math.PI / Math.sqrt(3 * this.rate)
+            let alpha = beta * this.rate;
+            let k = Math.log(c) - Math.log(beta) - this.rate
+            while (true) {
+                let u = Math.random()
+                let x = (alpha - Math.log((1-u)/u)) / beta
+                let n = Math.floor(x + 0.5)
+                if (n >= 0) {
+                    let v = Math.random()
+                    let y = alpha - beta*x
+                    if (y + Math.log(v/(1.+Math.exp(y))**2) <=
+                        k + n*Math.log(this.rate) - Math.log(this._fact(n))) {
+                            return n
+                    }
+                }
+            }
+        }
+        let L = Math.exp(-this.rate);
+        let k = 1;
+        let p = Math.random();
+        while (p > L) {
+            p *= Math.random();
+            k++;
+        }
+        return k-1;
+    }
+
+    eq(t: Poisson) { return this.rate == t.rate; }
+
+    density() { return new DefaultMap(); }  // This should never be called
+    sample_space() {
+        if (this._sample_space !== undefined) {
+            return this._sample_space;
+        }
+        this._sample_space = new SampleSpace((k) => {
+            if (k < 0) return 0;
+            if (k == 0) return Math.exp(-this.rate);
+            let p = 1;
+            let x = Math.exp(-this.rate / k);
+            for (let i = 1; i < k+1; i++) {
+                p *= this.rate * x / i;
+            }
+            return p;
+        });
+        return this._sample_space;
+    }
+
+    mean() { return this.rate; }
+    variance() { return this.rate; }
+
+    toString() { return `Pois(${this.rate})`; }
 }

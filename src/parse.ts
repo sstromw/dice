@@ -1,4 +1,4 @@
-import { Abs, Coin, Cond, Const, D, Eq, Div, Le, Lt, Ge, Geometric, Gt, Max, Min, Mod, Mult, Ne, Neg, Or, Prod, Roll, Sum } from "./dice";
+import { Abs, Coin, Cond, Const, D, Eq, Div, Le, Lt, Ge, Geometric, Gt, Max, Min, Mod, Mult, Ne, Neg, Or, Poisson, Prod, Roll, Sum } from "./dice";
 
 // The ugliest parser I ever did write
 export class Parse {
@@ -92,6 +92,10 @@ export class Parse {
                 if (m.groups?.prefix == "c") {
                     let x = this.parseProb(m.groups?.infix) || 0.5;
                     R = new Coin(x);
+                }
+                if (m.groups?.prefix == "pois") {
+                    let x = +m.groups?.infix;
+                    R = new Poisson(x);
                 }
                 this.addToken(m[0], R as Roll);
             }
