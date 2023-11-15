@@ -121,10 +121,6 @@ export class Parse {
     }
 
     private _parse(s: string): Roll | Error {
-        if (s.match(/[()]/)) {
-            console.log(`Warning: no parentheticals in _parse: ${s}`)
-        }
-
         // **** Lower precedence should be at the top **** //
         // ****         Sum comes before Prod         **** //
 
@@ -222,7 +218,7 @@ export class Parse {
     }
 
     parse(): Roll | Error {
-        while (this.tokenized_input.match(/[()]/)) {
+        while (this.tokenized_input.match(/.*\(.*\).*/)) {
             this.tokenizeParentheticals(this.tokenized_input);
         }
         return this._parse(this.tokenized_input);
