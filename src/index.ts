@@ -148,13 +148,13 @@ function addRoll() {
                         </div>
                     </div>
                     <div class="content" id="stats-div-${roll_id}">
-                    <div style="float: left; width: 80%;">
+                        <div style="float: left; width: 84%;">
                             <canvas id="chart-${roll_id}"></canvas>
                         </div>
-                        <div style="float: left; width: 10%;">
+                        <div style="float: left; width: 8%;">
                             <p id="stats-${roll_id}"></p>
                         </div>
-                        <div style="float: left; width: 10%;">
+                        <div style="float: left; width: 8%;">
                             <p id="percentiles-${roll_id}"></p>
                         </div>
                     </div>
