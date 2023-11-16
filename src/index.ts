@@ -112,8 +112,10 @@ function showStats(this: GlobalEventHandlers, ev: MouseEvent) {
     let elem = ROLLS.get(n).statsDiv;
     if (elem.style.display === "block") {
       elem.style.display = "none";
+      button.innerHTML = "&#8595;";
     } else {
       elem.style.display = "block";
+      button.innerHTML = "&#8593;";
     }
     populateStats(n);
 }
@@ -135,19 +137,16 @@ function addRoll() {
             li.innerHTML = `
                 <div class="list-item-div">
                     <div class="row">
-                        <div class="quarter-column">
-                            <div><p>${R}</p></div>
+                        <div style="float: left; width: 25%;">
+                            <button class="roll-button" id="roll-${roll_id}">${R}</button>
                         </div>
-                        <div class="quarter-column">
-                            <button class="roll-button" id="roll-${roll_id}">Roll</button>
-                            <p class="roll-display" id="display-${roll_id}"></p>
+                        <div style="float: left;">
+                            <p class="roll-display" id="display-${roll_id}"> </p>
                         </div>
-                        <div class="quarter-column">
-                            <button class="show-stats" id="show-stats-${roll_id}">Show Stats</button>
-                        </div>
-                        <div class="quarter-column">
+                        <div style="float: right; width: 25%;">
                             <button class="delete" id="delete-${roll_id}">Delete</button>
                         </div>
+                        <button class="show-stats" id="show-stats-${roll_id}">&#8595;</button>
                     </div>
                     <div class="content" id="stats-div-${roll_id}">
                         <div style="float: left; width: 100%; margin-right: -200px">

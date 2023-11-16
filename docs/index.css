@@ -53,8 +53,26 @@ table {
     width: 25%;
 }
 
+.roll-button {
+    width: 100%;
+    height: 100%;
+}
+
+.roll-display {
+    margin: 2px;
+    margin-left: 20px;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
 .delete {
     float: right;
+}
+
+.show-stats {
+    width: 100%;
+    height: 20px;
 }
 
 .row {
