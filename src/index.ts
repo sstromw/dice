@@ -24,8 +24,8 @@ interface ListItem {
     showStatsButton: HTMLButtonElement,  // show-stats-${roll_id}
     deleteButton: HTMLButtonElement,     // delete-${roll_id}
     statsDiv: HTMLDivElement,            // stats-div-${roll_id}
-    stats: HTMLParagraphElement,         // stats-${roll_id}
-    percentiles: HTMLParagraphElement,   // percentiles-${roll_id}
+    stats: HTMLTableElement,             // stats-${roll_id}
+    percentiles: HTMLTableElement,       // percentiles-${roll_id}
     chart: HTMLCanvasElement,            // chart-${roll_id}
 }
 
@@ -95,12 +95,13 @@ function populateStats(id: number) {
     );
     let mean = item.roll.mean().toFixed(2);
     let stdev = item.roll.stdev().toFixed(2);
-    item.stats.innerHTML = `&#956;: ${mean}<br>&#963;: ${stdev}`;
+    item.stats.innerHTML += `<tr><td>&#956;</td><td>${mean}</td></tr>`
+    item.stats.innerHTML += `<tr><td>&#963;</td><td>${stdev}</td></tr>`;
 
     let buckets = [10, 25, 50, 75, 90];
     for (let t of buckets) {
         let x = item.roll.inverse_cdf(t/100);
-        item.percentiles.innerHTML += `${t}%: ${x}<br>`;
+        item.percentiles.innerHTML += `<tr><td>${t}%</td><td>${x}</td></tr>`;
     }
 }
 
@@ -135,7 +136,7 @@ function addRoll() {
                 <div class="list-item-div">
                     <div class="row">
                         <div class="quarter-column">
-                            <div>${R}</div>
+                            <div><p>${R}</p></div>
                         </div>
                         <div class="quarter-column">
                             <button class="roll-button" id="roll-${roll_id}">Roll</button>
@@ -149,14 +150,14 @@ function addRoll() {
                         </div>
                     </div>
                     <div class="content" id="stats-div-${roll_id}">
-                        <div style="float: left; width: 84%;">
+                        <div style="float: left; width: 100%; margin-right: -200px">
                             <canvas id="chart-${roll_id}"></canvas>
                         </div>
-                        <div style="float: left; width: 8%;">
-                            <p id="stats-${roll_id}"></p>
+                        <div>
+                            <table id="stats-${roll_id}"></table>
                         </div>
-                        <div style="float: left; width: 8%;">
-                            <p id="percentiles-${roll_id}"></p>
+                        <div>
+                            <table id="percentiles-${roll_id}"></table>
                         </div>
                     </div>
                 </div>
@@ -169,8 +170,8 @@ function addRoll() {
                 showStatsButton: document.getElementById(`show-stats-${roll_id}`) as HTMLButtonElement,
                 deleteButton: document.getElementById(`delete-${roll_id}`) as HTMLButtonElement,
                 statsDiv: document.getElementById(`stats-div-${roll_id}`) as HTMLDivElement,
-                stats: document.getElementById(`stats-${roll_id}`) as HTMLParagraphElement,
-                percentiles: document.getElementById(`percentiles-${roll_id}`) as HTMLParagraphElement,
+                stats: document.getElementById(`stats-${roll_id}`) as HTMLTableElement,
+                percentiles: document.getElementById(`percentiles-${roll_id}`) as HTMLTableElement,
                 chart: document.getElementById(`chart-${roll_id}`) as HTMLCanvasElement,
             };
             Object.entries(item).forEach(([k,v]) => { 

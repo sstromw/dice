@@ -9,7 +9,6 @@ ul {
 }
 
 p {
-    margin: 4px;
     font-family: monospace;
 }
 
@@ -24,6 +23,12 @@ button {
 canvas {
     margin: 0;
     padding: 0;
+}
+
+table {
+    float: right;
+    width: 100px;
+    font-family: monospace;
 }
 
 #overlay {
@@ -46,10 +51,6 @@ canvas {
 .quarter-column {
     float: left;
     width: 25%;
-}
-
-.column {
-    float: left;
 }
 
 .delete {
