@@ -136,18 +136,14 @@ function addRoll() {
             li.id = `li-${roll_id}`
             li.innerHTML = `
                 <div class="list-item-div">
-                    <div class="row">
-                        <div style="float: left; width: 25%;">
-                            <button class="roll-button" id="roll-${roll_id}">${R}</button>
-                        </div>
-                        <div style="float: left;">
-                            <p class="roll-display" id="display-${roll_id}"> </p>
-                        </div>
-                        <div style="float: right; width: 25%;">
-                            <button class="delete" id="delete-${roll_id}">Delete</button>
-                        </div>
-                        <button class="show-stats" id="show-stats-${roll_id}">&#8595;</button>
+                    <div style="height: 80px;">
+                        <button class="roll-button" id="roll-${roll_id}">
+                            <div class="button-text">${R}</div>
+                        </button>
+                        <p class="roll-display" id="display-${roll_id}"> </p>
+                        <button class="delete" id="delete-${roll_id}">Delete</button>
                     </div>
+                    <button class="show-stats" id="show-stats-${roll_id}">&#8595;</button>
                     <div class="content" id="stats-div-${roll_id}">
                         <div style="float: left; width: 100%; margin-right: -200px">
                             <canvas id="chart-${roll_id}"></canvas>

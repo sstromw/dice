@@ -54,29 +54,35 @@ table {
 }
 
 .roll-button {
-    width: 100%;
+    float: left;
     height: 100%;
+    width: 25%;
+}
+
+.button-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 32px;
 }
 
 .roll-display {
+    float: left;
+    height: 100%;
     margin: 2px;
     margin-left: 20px;
     text-align: center;
-    width: 100%;
-    height: 100%;
+    font-size: 64px;
 }
 
 .delete {
     float: right;
+    /* width: 25%; */
 }
 
 .show-stats {
     width: 100%;
     height: 20px;
-}
-
-.row {
-    height: 80px;
 }
 
 .content {
