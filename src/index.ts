@@ -19,14 +19,16 @@ if (INPUT == null
 
 interface ListItem {
     roll: Roll,
-    rollButton: HTMLButtonElement,       // roll-${roll_id}
-    display: HTMLParagraphElement,       // display-${roll_id}
-    showStatsButton: HTMLButtonElement,  // show-stats-${roll_id}
-    deleteButton: HTMLButtonElement,     // delete-${roll_id}
-    statsDiv: HTMLDivElement,            // stats-div-${roll_id}
-    stats: HTMLTableElement,             // stats-${roll_id}
-    percentiles: HTMLTableElement,       // percentiles-${roll_id}
-    chart: HTMLCanvasElement,            // chart-${roll_id}
+    listItem: Element,         // .list-item
+    rollButton: Element,       // .roll-button
+    display: Element,          // .roll-display
+    deleteButton: Element,     // .delete
+    showStatsButton: Element,  // .show-stats
+    statsDiv: Element,         // .content
+    stats: Element,            // .stats
+    percentiles: Element,      // .percentiles
+    chart: Element,            // .chart
+    stats_populated: boolean,
 }
 
 var ROLLS = new Map<number, ListItem>();
@@ -41,21 +43,17 @@ function isUnique(r: Roll) {
 
 function rollDie(this: GlobalEventHandlers, ev: MouseEvent) {
     let button = ev.currentTarget as HTMLButtonElement;
-    let m = button.id.match("roll-(?<id>[0-9]*)");
-    if (m?.groups?.id == null) { throw new Error("fix ya ids"); }
-    let n = +m.groups.id;
-    let elem = document.getElementById(`display-${n}`);
-    if (elem == null) { throw new Error("fix ya ids"); }
-    elem.innerHTML = ROLLS.get(n)?.roll.roll().toString() || "";
+    let m = button.id.match(/rollButton(?<id>[0-9]*)/);
+    let item = ROLLS.get(+m.groups.id);
+    item.display.innerHTML = item.roll.roll().toString() || "";
 }
 
 function deleteRoll(this: GlobalEventHandlers, ev: MouseEvent) {
     let button = ev.currentTarget as HTMLButtonElement;
-    let m = button.id.match("delete-(?<id>[0-9]*)");
-    if (m?.groups?.id == null) { throw new Error("fix ya ids"); }
+    let m = button.id.match(/deleteButton(?<id>[0-9]*)/);
     let n = +m.groups.id;
+    ROLLS.get(n).listItem.remove();
     ROLLS.delete(n);
-    document.getElementById(`li-${n}`)?.remove();
 }
 
 function populateStats(id: number) {
@@ -73,6 +71,9 @@ function populateStats(id: number) {
     while (S.cdf(k-1) < 1 - m/20) {
         data.push([k, S.pmf(k)]);
         k++;
+    }
+    if (!(item.chart instanceof HTMLCanvasElement)) {
+        throw new Error("type error: chart");
     }
     // TODO https://stackoverflow.com/questions/30256695/chart-js-drawing-an-arbitrary-vertical-line
     const pmf_chart = new Chart(
@@ -107,9 +108,13 @@ function populateStats(id: number) {
 
 function showStats(this: GlobalEventHandlers, ev: MouseEvent) {
     let button = ev.currentTarget as HTMLButtonElement;
-    let m = button.id.match("show-stats-(?<id>[0-9]*)");
+    let m = button.id.match(/showStatsButton(?<id>[0-9]+)/);
     let n = +m.groups.id;
-    let elem = ROLLS.get(n).statsDiv;
+    let item = ROLLS.get(n);
+    let elem = item.statsDiv;
+    if (!(elem instanceof HTMLDivElement)) {
+        throw new TypeError("stats should be a div");
+    }
     if (elem.style.display === "block") {
       elem.style.display = "none";
       button.innerHTML = "&#8595;";
@@ -117,7 +122,10 @@ function showStats(this: GlobalEventHandlers, ev: MouseEvent) {
       elem.style.display = "block";
       button.innerHTML = "&#8593;";
     }
-    populateStats(n);
+    if (!item.stats_populated) {
+        populateStats(n);
+        item.stats_populated = true;
+    }
 }
 
 function checkKey(e: KeyboardEvent) {
@@ -132,54 +140,37 @@ function addRoll() {
     if (str) {
         let R = new Parse(str).parse();
         if (R instanceof Roll) {
-            let li = document.createElement("li");
-            li.id = `li-${roll_id}`
-            li.innerHTML = `
-                <div class="list-item-div">
-                    <div style="height: 80px;">
-                        <button class="roll-button" id="roll-${roll_id}">
-                            <div class="button-text">${R}</div>
-                        </button>
-                        <p class="roll-display" id="display-${roll_id}"> </p>
-                        <button class="delete" id="delete-${roll_id}">Delete</button>
-                    </div>
-                    <button class="show-stats" id="show-stats-${roll_id}">&#8595;</button>
-                    <div class="content" id="stats-div-${roll_id}">
-                        <div style="float: left; width: 100%; margin-right: -200px">
-                            <canvas id="chart-${roll_id}"></canvas>
-                        </div>
-                        <div>
-                            <table id="stats-${roll_id}"></table>
-                        </div>
-                        <div>
-                            <table id="percentiles-${roll_id}"></table>
-                        </div>
-                    </div>
-                </div>
-            `;
-            LIST?.append(li);
-            let item = {
+            let template = document.getElementById('roll-item') as HTMLTemplateElement;
+            let item = template.content.cloneNode(true) as HTMLLIElement;
+            item.querySelector('.button-text').innerHTML = R.toString();
+            let itemElements = {
                 roll: R,
-                rollButton: document.getElementById(`roll-${roll_id}`) as HTMLButtonElement,
-                display: document.getElementById(`display-${roll_id}`) as HTMLParagraphElement,
-                showStatsButton: document.getElementById(`show-stats-${roll_id}`) as HTMLButtonElement,
-                deleteButton: document.getElementById(`delete-${roll_id}`) as HTMLButtonElement,
-                statsDiv: document.getElementById(`stats-div-${roll_id}`) as HTMLDivElement,
-                stats: document.getElementById(`stats-${roll_id}`) as HTMLTableElement,
-                percentiles: document.getElementById(`percentiles-${roll_id}`) as HTMLTableElement,
-                chart: document.getElementById(`chart-${roll_id}`) as HTMLCanvasElement,
+                listItem: item,
+                rollButton: item.querySelector('.roll-button'),
+                display: item.querySelector('.roll-display'),
+                deleteButton: item.querySelector('.delete'),
+                showStatsButton: item.querySelector('.show-stats'),
+                statsDiv: item.querySelector('.content'),
+                stats: item.querySelector('.stats'),
+                percentiles: item.querySelector('.percentiles'),
+                chart: item.querySelector('.chart'),
+                stats_populated: false,
             };
-            Object.entries(item).forEach(([k,v]) => { 
-                if (v === undefined) {
-                    throw new Error(`fix ya ids: ${k}`)
+            Object.entries(itemElements).forEach(([k,v]) => {
+                if (v === null) {
+                    throw new Error(`Cannot find element: ${k}`)
+                }
+                if (v instanceof Element) {
+                    v.id = k + roll_id;
                 }
             });
-            item.rollButton.onclick = rollDie;
-            item.deleteButton.onclick = deleteRoll;
-            item.showStatsButton.onclick = showStats;
-            ROLLS.set(roll_id, item);
+            itemElements.rollButton.addEventListener('click', rollDie);
+            itemElements.deleteButton.addEventListener('click', deleteRoll);
+            itemElements.showStatsButton.addEventListener('click', showStats);
+            ROLLS.set(roll_id, itemElements);
             roll_id++;
             INPUT.value = "";
+            LIST?.append(item);
         }
         else if (R instanceof Error) {
             console.log(R);
