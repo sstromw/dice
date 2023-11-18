@@ -141,11 +141,11 @@ function addRoll() {
         let R = new Parse(str).parse();
         if (R instanceof Roll) {
             let template = document.getElementById('roll-item') as HTMLTemplateElement;
-            let item = template.content.cloneNode(true) as HTMLLIElement;
+            let item = template.content.cloneNode(true) as Element;
             item.querySelector('.button-text').innerHTML = R.toString();
             let itemElements = {
                 roll: R,
-                listItem: item,
+                listItem: item.querySelector('.list-item'),
                 rollButton: item.querySelector('.roll-button'),
                 display: item.querySelector('.roll-display'),
                 deleteButton: item.querySelector('.delete'),
