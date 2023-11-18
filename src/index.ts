@@ -34,13 +34,6 @@ interface ListItem {
 var ROLLS = new Map<number, ListItem>();
 var roll_id = 0;
 
-function isUnique(r: Roll) {
-    for (let s of ROLLS.values()) {
-        if (s.roll.eq(r)) { return false; }
-    }
-    return true;
-}
-
 function idFromElement(e: Element) {
     let m = e.id.match(/[A-Za-z]*(?<id>[0-9]*)/);
     return +m.groups.id;

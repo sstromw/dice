@@ -21,12 +21,6 @@ export class Cond extends Roll {
                this.failure.roll();
     }
 
-    eq(t: Cond) {
-        return this.condition.eq(t.condition)
-            && this.success.eq(t.success)
-            && this.failure.eq(t.failure);
-    }
-
     mean() {
         let p = 1-this.sample_space().cdf(0);
         return p * this.success.mean() +
@@ -62,11 +56,6 @@ export class Or extends Roll {
     roll() {
         let n = Math.floor(Math.random() * this.length);
         return this.rolls[n].roll();
-    }
-
-    eq(t: Or) {
-        throw new Error("not implemented");
-        return false;
     }
 
     density() {
@@ -105,11 +94,6 @@ export class Eq extends CompareOp {
         super((x,y) => x == y, left, right, "=");
     }
 
-    eq(t: Eq) {
-        return (this.left.eq(t.left) && this.right.eq(t.right))
-            || (this.right.eq(t.left) && this.left.eq(t.right));
-    }
-
     density() {
         let A = new DefaultMap();
         for (let [k,v] of this.left.sample_space()) {
@@ -123,11 +107,6 @@ export class Eq extends CompareOp {
 export class Ne extends CompareOp {
     constructor(readonly left: Roll, readonly right: Roll) {
         super((x,y) => x != y, left, right, "!=");
-    }
-
-    eq(t: Ne) {
-        return (this.left.eq(t.left) && this.right.eq(t.right))
-            || (this.right.eq(t.left) && this.left.eq(t.right));
     }
 
     density() {
@@ -145,10 +124,6 @@ export class Gt extends CompareOp {
         super((x,y) => x > y, left, right, ">");
     }
 
-    eq(t: Gt) {
-        return this.left.eq(t.left) && this.right.eq(t.right);
-    }
-
     density() {
         let A = new DefaultMap();
         for (let [k,v] of this.left.sample_space()) {
@@ -162,10 +137,6 @@ export class Gt extends CompareOp {
 export class Le extends CompareOp {
     constructor(readonly left: Roll, readonly right: Roll) {
         super((x,y) => x <= y, left, right, "<=");
-    }
-
-    eq(t: Le) {
-        return this.left.eq(t.left) && this.right.eq(t.right);
     }
 
     density() {
@@ -183,10 +154,6 @@ export class Lt extends CompareOp {
         super((x,y) => x < y, left, right, "<");
     }
 
-    eq(t: Lt) {
-        return this.left.eq(t.left) && this.right.eq(t.right);
-    }
-
     density() {
         let A = new DefaultMap();
         for (let [k,v] of this.left.sample_space()) {
@@ -200,10 +167,6 @@ export class Lt extends CompareOp {
 export class Ge extends CompareOp {
     constructor(readonly left: Roll, readonly right: Roll) {
         super((x,y) => x >= y, left, right, ">=");
-    }
-
-    eq(t: Ge) {
-        return this.left.eq(t.left) && this.right.eq(t.right);
     }
 
     density() {

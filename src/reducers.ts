@@ -1,30 +1,6 @@
 import { Roll } from "./roll";
 import { DefaultMap, SampleSpace } from "./sample_space";
 
-// This is the equality function for multi-roll reducers. It's complicated
-// because Associative actually means Commutative, so order doesn't matter
-//
-// We can simplify this by enforcing a sorted order to the rolls
-function equals<T extends AssociativeReduction | Max>(left: T, right: T) {
-    if (left.rolls.length != right.rolls.length) { return false; }
-
-    let I = Array.from(Array(left.rolls.length), (_) => true);
-    for (let r of left.rolls) {
-        let j = 0;
-        let hit = false;
-        while (j < left.rolls.length) {
-            if (I[j] && r.eq(right.rolls[j])) {
-                I[j] = false;
-                j = left.rolls.length;
-                hit = true;
-            }
-            j++;
-        }
-        if (!hit) { return false; }
-    }
-    return true;
-}
-
 abstract class AssociativeReduction extends Roll {
     constructor(readonly rolls: Roll[],
                 readonly op: (lst: number[]) => number,
@@ -37,11 +13,6 @@ abstract class AssociativeReduction extends Roll {
 
     roll() {
         return this.op(this.rolls.map((r) => r.roll()));
-    }
-
-    eq(t: AssociativeReduction) {
-        if (this.symbol !== t.symbol) { return false; }
-        return equals<AssociativeReduction>(this, t);
     }
 
     density() {
@@ -124,8 +95,6 @@ export class Max extends Roll {
         return s;
     }
 
-    eq(t: Max) { return equals<Max>(this, t); }
-
     density() { return new DefaultMap(); }  // Should never be called
     sample_space(): SampleSpace {
         if (this._sample_space !== undefined) {
@@ -171,7 +140,6 @@ export class Abs extends UnivariateMap {
     }
 
     toString() { return `|${this.R}|`; }
-    eq(t: Abs) { return this.R.eq(t.R); }
 }
 
 export class Neg extends UnivariateMap {
@@ -181,7 +149,6 @@ export class Neg extends UnivariateMap {
     }
 
     toString() { return `-${this.R}`; }
-    eq(t: Neg) { return this.R.eq(t.R); }
 }
 
 export class Mod extends UnivariateMap {
@@ -192,7 +159,6 @@ export class Mod extends UnivariateMap {
     }
 
     toString() { return `${this.R}%${this.n}`; }
-    eq(t: Mod) { return this.R.eq(t.R) && this.n == t.n; }
 }
 
 // A floor division
@@ -204,5 +170,4 @@ export class Div extends UnivariateMap {
     }
 
     toString() { return `${this.R}/${this.n}`; }
-    eq(t: Div) { return this.R.eq(t.R) && this.n == t.n; }
 }

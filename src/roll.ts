@@ -3,7 +3,6 @@ import { DefaultMap, SampleSpace } from "./sample_space";
 export abstract class Roll {
     abstract toString(): string;
     abstract roll(): number;
-    abstract eq(other: Roll): boolean;
 
     // Set up lazy pmf evaluation since it's *usually* finite
     protected abstract density(): DefaultMap;
@@ -67,8 +66,6 @@ export class D extends Roll {
         return 1 + Math.floor(Math.random() * this.n);
     }
 
-    eq(t: D) { return t.n == this.n; }
-
     density() {
         let M = new DefaultMap();
         for (let k = 1; k <= this.n; k++) {
@@ -90,7 +87,6 @@ export class Const extends Roll {
 
     toString() { return this.val.toString(); }
     roll() { return this.val; }
-    eq(t: Const) { return t.val == this.val; }
     density() { return new DefaultMap([[this.val, 1]]); }
     mean() { return this.val; }
     variance() { return 0; }
@@ -110,8 +106,6 @@ export class Coin extends Roll {
     toString() { return `C(${this.p.toPrecision(2)})`; }  // should be B for Bernoulli
 
     roll() { return Math.random() < this.p ? 1 : 0; }
-
-    eq(t: Coin) { return this.p == t.p; }
 
     density() {
         return new DefaultMap([[0, 1-this.p], [1, this.p]])
@@ -138,8 +132,6 @@ export class Geometric extends Roll {
         for(i=1; Math.random() > this.p; i++);
         return i;
     }
-
-    eq(t: Geometric) { return t.p == this.p; }
 
     density() { return new DefaultMap(); }  // This should never be called
     sample_space() {
@@ -205,8 +197,6 @@ export class Poisson extends Roll {
         }
         return k-1;
     }
-
-    eq(t: Poisson) { return this.rate == t.rate; }
 
     density() { return new DefaultMap(); }  // This should never be called
     sample_space() {
