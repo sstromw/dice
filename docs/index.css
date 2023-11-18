@@ -75,14 +75,11 @@ table {
     font-size: 64px;
 }
 
-.delete {
-    float: right;
-    /* width: 25%; */
-}
-
 .show-stats {
     width: 100%;
     height: 20px;
+    background-color: transparent;
+    border: none;
 }
 
 .content {
