@@ -28,7 +28,7 @@ export class DefaultMap {
 
 type Fn = DefaultMap | ((val: number) => number) | undefined;
 
-const EPSILON: number = 0.000001;
+const EPSILON: number = 1e-6;
 export class SampleSpace implements Iterable<[number, number]> {
     _pmf: Fn;
     _cdf: Fn;

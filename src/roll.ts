@@ -48,7 +48,8 @@ export abstract class Roll {
             throw new Error(`invalid call to inverse_cdf: ${q}`);
         }
         for (let [k,_] of this.sample_space()) {
-            if (this.cdf(k) >= q) return k;
+            // We account for floating point errors here
+            if (this.cdf(k) - q > -1e-8) return k;
         }
         throw new Error("this shouldn't be possible");
     }
