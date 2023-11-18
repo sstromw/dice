@@ -31,6 +31,11 @@ table {
     font-family: monospace;
 }
 
+@keyframes test {
+    from { color: lightgray; }
+    to { color: black; }
+}
+
 #overlay {
     position: absolute;
     background-color: lightgray;
@@ -73,6 +78,7 @@ table {
     margin-left: 20px;
     text-align: center;
     font-size: 64px;
+    animation: test 400ms;
 }
 
 .show-stats {

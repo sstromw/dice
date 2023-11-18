@@ -42,6 +42,10 @@ function idFromElement(e: Element) {
 function rollDie(this: GlobalEventHandlers, ev: MouseEvent) {
     let button = ev.currentTarget as Element;
     let item = ROLLS.get(idFromElement(button));
+    let display = item.display as HTMLParagraphElement;
+    display.style.animation = 'none';
+    display.offsetHeight; /* trigger reflow */
+    display.style.animation = null; 
     item.display.innerHTML = item.roll.roll().toString() || "";
 }
 
