@@ -41,17 +41,20 @@ function isUnique(r: Roll) {
     return true;
 }
 
+function idFromElement(e: Element) {
+    let m = e.id.match(/[A-Za-z]*(?<id>[0-9]*)/);
+    return +m.groups.id;
+}
+
 function rollDie(this: GlobalEventHandlers, ev: MouseEvent) {
-    let button = ev.currentTarget as HTMLButtonElement;
-    let m = button.id.match(/rollButton(?<id>[0-9]*)/);
-    let item = ROLLS.get(+m.groups.id);
+    let button = ev.currentTarget as Element;
+    let item = ROLLS.get(idFromElement(button));
     item.display.innerHTML = item.roll.roll().toString() || "";
 }
 
 function deleteRoll(this: GlobalEventHandlers, ev: MouseEvent) {
-    let button = ev.currentTarget as HTMLButtonElement;
-    let m = button.id.match(/deleteButton(?<id>[0-9]*)/);
-    let n = +m.groups.id;
+    let button = ev.currentTarget as Element;
+    let n = idFromElement(button);
     ROLLS.get(n).listItem.remove();
     ROLLS.delete(n);
 }
@@ -107,9 +110,8 @@ function populateStats(id: number) {
 }
 
 function showStats(this: GlobalEventHandlers, ev: MouseEvent) {
-    let button = ev.currentTarget as HTMLButtonElement;
-    let m = button.id.match(/showStatsButton(?<id>[0-9]+)/);
-    let n = +m.groups.id;
+    let button = ev.currentTarget as Element;
+    let n = idFromElement(button);
     let item = ROLLS.get(n);
     let elem = item.statsDiv;
     if (!(elem instanceof HTMLDivElement)) {
