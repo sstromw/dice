@@ -19,16 +19,19 @@ if (INPUT == null
 
 interface ListItem {
     roll: Roll,
-    listItem: Element,         // .list-item
-    rollButton: Element,       // .roll-button
-    display: Element,          // .roll-display
-    deleteButton: Element,     // .delete
-    showStatsButton: Element,  // .show-stats
-    statsDiv: Element,         // .content
-    stats: Element,            // .stats
-    percentiles: Element,      // .percentiles
-    chart: Element,            // .chart
+
+    listItem: HTMLElement,         // .list-item
+    rollButton: HTMLElement,       // .roll-button
+    display: HTMLElement,          // .roll-display
+    deleteButton: HTMLElement,     // .delete
+    showStatsButton: HTMLElement,  // .show-stats
+    statsDiv: HTMLElement,         // .content
+    stats: HTMLElement,            // .stats
+    percentiles: HTMLElement,      // .percentiles
+    chart: HTMLElement,            // .chart
+
     stats_populated: boolean,
+    color: string,
 }
 
 var ROLLS = new Map<number, ListItem>();
@@ -85,7 +88,8 @@ function populateStats(id: number) {
           datasets: [
             {
               label: 'Probability',
-              data: data.map(e => e[1])
+              data: data.map(e => e[1]),
+              backgroundColor: item.color,
             }
           ]
         },
@@ -142,20 +146,27 @@ function addRoll() {
             let template = document.getElementById('roll-item') as HTMLTemplateElement;
             let item = template.content.cloneNode(true) as Element;
             item.querySelector('.button-text').innerHTML = R.toString();
-            let itemElements = {
+
+            let color = Math.floor(Math.random() * (1<<24)).toString(16);
+            while (color.length < 6) { color = '0' + color; }
+            color = '#' + color;
+
+            let obj = {
                 roll: R,
-                listItem: item.querySelector('.list-item'),
-                rollButton: item.querySelector('.roll-button'),
-                display: item.querySelector('.roll-display'),
-                deleteButton: item.querySelector('.delete'),
-                showStatsButton: item.querySelector('.show-stats'),
-                statsDiv: item.querySelector('.content'),
-                stats: item.querySelector('.stats'),
-                percentiles: item.querySelector('.percentiles'),
-                chart: item.querySelector('.chart'),
+                listItem: item.querySelector('.list-item') as HTMLElement,
+                rollButton: item.querySelector('.roll-button') as HTMLElement,
+                display: item.querySelector('.roll-display') as HTMLElement,
+                deleteButton: item.querySelector('.delete') as HTMLElement,
+                showStatsButton: item.querySelector('.show-stats') as HTMLElement,
+                statsDiv: item.querySelector('.content') as HTMLElement,
+                stats: item.querySelector('.stats') as HTMLElement,
+                percentiles: item.querySelector('.percentiles') as HTMLElement,
+                chart: item.querySelector('.chart') as HTMLElement,
                 stats_populated: false,
+                color: color,
             };
-            Object.entries(itemElements).forEach(([k,v]) => {
+            console.log(obj.color);
+            Object.entries(obj).forEach(([k,v]) => {
                 if (v === null) {
                     throw new Error(`Cannot find element: ${k}`)
                 }
@@ -163,10 +174,13 @@ function addRoll() {
                     v.id = k + roll_id;
                 }
             });
-            itemElements.rollButton.addEventListener('click', rollDie);
-            itemElements.deleteButton.addEventListener('click', deleteRoll);
-            itemElements.showStatsButton.addEventListener('click', showStats);
-            ROLLS.set(roll_id, itemElements);
+            obj.rollButton.addEventListener('click', rollDie);
+            obj.deleteButton.addEventListener('click', deleteRoll);
+            obj.showStatsButton.addEventListener('click', showStats);
+            obj.rollButton.style.backgroundColor = obj.color;
+            obj.deleteButton.style.backgroundColor = obj.color;
+            obj.showStatsButton.style.color = obj.color;
+            ROLLS.set(roll_id, obj);
             roll_id++;
             INPUT.value = "";
             LIST?.append(item);
