@@ -207,6 +207,26 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
+let PLACEHOLDERS = [
+    'e.g. "2d6 - d4 + 2"',
+    'e.g. "max(d20, d20, d20)"',
+    'e.g. "min(d10, d12)"',
+    'e.g. "d100 + d11"',
+    'e.g. "2 + d9"',
+    'e.g. "2(d6 + d8)"',
+    'e.g. "2*d8"',
+    'e.g. "100d20"',
+    'e.g. "-d20"',
+    'e.g. "d4 < d6"',
+    'e.g. "3(c)"',
+    'e.g. "g(0.1)"',
+    'e.g. "pois(10)"',
+]
+
+INPUT.placeholder = PLACEHOLDERS[
+    Math.floor(Math.random() * PLACEHOLDERS.length)
+];
+
 INPUT.onkeydown = checkKey;
 ADD_BUTTON.onclick = addRoll;
 OVERLAY_BUTTON.onclick = showOverlay;

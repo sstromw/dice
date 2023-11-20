@@ -77,7 +77,7 @@ table {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    font-size: 32px;
+    font-size: 24px;
 }
 
 .roll-display {
