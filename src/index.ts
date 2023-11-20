@@ -183,6 +183,7 @@ function addRoll() {
             ROLLS.set(roll_id, obj);
             roll_id++;
             INPUT.value = "";
+            INPUT.placeholder = "";
             LIST?.append(item);
         }
         else if (R instanceof Error) {
