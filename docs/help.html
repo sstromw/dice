@@ -1,24 +1,32 @@
-<style type="text/css">td { padding: 4px 24px; }</style>
+<style type="text/css">
+    td {
+        padding: 4px 24px;
+    }
+
+    code {
+        color: rgb(0, 56, 0);
+    }
+</style>
 <h1>Dice Roller and Probability Calculator Webapp</h1>
 <p>by Sam!</p>
 <h2>Guide to dice notation</h2>
 <p>
-As a quickstart example, if you put "<code>2d4 + d5 - 1<code>" into the box, the parser
-will interpret "roll two 4-sided dice and one 5-sided dice, subtract one, and
-produce the sum".
-<br><br>
-We ignore whitespace and is case-insensitive. Writing "<code>2 D4 +D5 -1<code>" gives the
-same result.
+    As a quickstart example, if you put <code>2d4 + d5 - 1</code> into the box, the parser
+    will interpret "roll two 4-sided dice and one 5-sided dice, subtract one, and
+    produce the sum".
+    <br><br>
+    We ignore whitespace and is case-insensitive. Writing <code>2 D4 +D5 -1</code> gives the
+    same result.
 </p>
-<h3><code>d<code>-Type and Constant Rolls</h3>
+<h3><code>d</code>-Type and Constant Rolls</h3>
 <p>
-<code>d{n}<code> refers to an <code>n<code>-sided die with values <code>1, 2, ..., n<code>, each equally
-likely. An integer constant <code>m<code> will always produce that constant.
+    <code>d{n}</code> refers to an <code>n</code>-sided die with values <code>1, 2, ..., n</code>, each equally
+    likely. An integer constant <code>m</code> will always produce that constant.
 </p>
 <h3>Operators</h3>
 <p>
-Operators have a functional form and an infix form. All functions support an
-arbitrary number of parameters, and each operator is associative.
+    Operators have a functional form and an infix form. All functions support an
+    arbitrary number of parameters, and each operator is associative.
 </p>
 <table>
     <tr>
@@ -27,75 +35,77 @@ arbitrary number of parameters, and each operator is associative.
         <td><b>Operator</b></td>
     </tr>
     <tr>
-        <td>Sum of <code>R1<code> and <code>R2<code></td>
-        <td><code>sum(R1,R2)<code></td>
-        <td><code>R1 + R2<code></td>
+        <td>Sum of <code>R1</code> and <code>R2</code></td>
+        <td><code>sum(R1,R2)</code></td>
+        <td><code>R1 + R2</code></td>
     </tr>
     <tr>
-        <td>Product of <code>R1<code> and <code>R2<code></td>
-        <td><code>prod(R1,R2)<code></td>
-        <td><code>R1 * R2<code></td>
+        <td>Product of <code>R1</code> and <code>R2</code></td>
+        <td><code>prod(R1,R2)</code></td>
+        <td><code>R1 * R2</code></td>
     </tr>
     <tr>
-        <td>Greater of <code>R1<code> and <code>R2<code></td>
-        <td><code>max(R1,R2)<code></td>
-        <td><code>R1 >> R2<code></td>
+        <td>Greater of <code>R1</code> and <code>R2</code></td>
+        <td><code>max(R1,R2)</code></td>
+        <td><code>R1 >> R2</code></td>
     </tr>
     <tr>
-        <td>Lesser of <code>R1<code> and <code>R2<code></td>
-        <td><code>min(R1,R2)<code></td>
-        <td><code>R1 << R2<code></td>
+        <td>Lesser of <code>R1</code> and <code>R2</code></td>
+        <td><code>min(R1,R2)</code></td>
+        <td><code>R1 << R2</code></td>
     </tr>
     <tr>
         <td>Roll one operand at random</td>
-        <td><code>or(R1,R2)<code></td>
-        <td><code>R1 | R2<code></td>
+        <td><code>or(R1,R2)</code></td>
+        <td><code>R1 | R2</code></td>
     </tr>
     <tr>
-        <td>Roll <code>R1<code> if <code>T<code> is greater than 0 and <code>R2<code> otherwise</td>
-        <td><code>cond(T,R1,R2)<code></td>
-        <td><code>T ? R1 : R2<code></td>
+        <td>Roll <code>R1</code> if <code>T</code> is greater than 0 and <code>R2</code> otherwise</td>
+        <td><code>cond(T,R1,R2)</code></td>
+        <td><code>T ? R1 : R2</code></td>
     </tr>
 </table>
 <h3>A note on multiplication</h3>
 <p>
-In the world of random variables, constant multiplication and repeated addition
-are distinct, so "<code>2 * d6<code>" refers to rolling one <code>d6<code> and doubling the result
-while "<code>2d6<code>" refers to rolling two <code>d6<code> and adding the results.
-<br><br>
-The shorthand <code>n(R)<code> for adding <code>n<code> copies of <code>R<code> works for all rolls, but the
-shorthand without the parentheses only works for <code>d<code>-type rolls (i.e. <code>2d6<code> is
-valid but <code>2 2<code> is not)
+    In the world of random variables, constant multiplication and repeated addition
+    are distinct, so <code>2 * d6</code> refers to rolling one <code>d6</code> and doubling the result
+    while <code>2d6</code> refers to rolling two <code>d6</code> and adding the results.
+    <br><br>
+    The shorthand <code>n(R)</code> for adding <code>n</code> copies of <code>R</code> works for all rolls, but the
+    shorthand without the parentheses only works for <code>d</code>-type rolls (i.e. <code>2d6</code> is
+    valid but <code>2 2</code> is not)
 </p>
 <h3>Coins and Comparison Operators</h3>
 <p>
-Rolling a coin produces either 0 or 1. A coin is denoted with <code>c(q)<code>, where
-0 <= <code>q<code> <= 1 is the probability of rolling a 1. Shorthands <code>c()<code> and <code>c<code> refer
-to a fair coin. Writing <code>c(1/100)<code> or <code>c(100)<code> is shorthand and will be
-converted to <code>c(0.01)<code>. Similarly, <code>c(3/4)<code> will be converted to <code>c(0.75)<code>.
-<br><br>
-A binomial distribution with <code>n<code> trials and probability <code>q<code> is just <code>n(c(q))<code>.
-<br><br>
-Comparison operators will also produce a 0 or 1. For instance, "<code>R1 = R2<code>"
-refers to a die that rolls <code>R1<code> and <code>R2<code> and produces 1 if and only if the
-results are equal. Similarly with other operators.
-<ul>
-    <li><code>R1 = R2<code></li>
-    <li><code>R1 != R2<code></li>
-    <li><code>R1 < R2<code></li>
-    <li><code>R1 <= R2<code></li>
-    <li><code>R1 > R2<code></li>
-    <li><code>R1 >= R2<code></li>
-</ul>
-Comparison operators and coins are useful as the condition operator of <code>cond<code>.
+    Rolling a coin produces either 0 or 1. A coin is denoted with <code>c(q)</code>, where
+    0 <= <code>q</code>
+        <= 1 is the probability of rolling a 1. Shorthands <code>c()</code> and <code>c</code> refer
+            to a fair coin. Writing <code>c(1/100)</code> or <code>c(100)</code> is shorthand and will be
+            converted to <code>c(0.01)</code>. Similarly, <code>c(3/4)</code> will be converted to <code>c(0.75)</code>.
+            <br><br>
+            A binomial distribution with <code>n</code> trials and probability <code>q</code> is just
+            <code>n(c(q))</code>.
+            <br><br>
+            Comparison operators will also produce a 0 or 1. For instance, <code>R1 = R2</code>
+            refers to a die that rolls <code>R1</code> and <code>R2</code> and produces 1 if and only if the
+            results are equal. Similarly with other operators.
+            <ul>
+                <li><code>R1 = R2</code></li>
+                <li><code>R1 != R2</code></li>
+                <li><code>R1 < R2</code></li>
+                <li><code>R1 <= R2</code></li>
+                <li><code>R1 > R2</code></li>
+                <li><code>R1 >= R2</code></li>
+            </ul>
+            Comparison operators and coins are useful as the condition operator of <code>cond</code>.
 </p>
 <h3>Geometric and Poisson distributions</h3>
 <p>
-The geometric distribution is denoted <code>g(q)<code>. These can produce any positive
-integer, but for calculating statistics the library rounds off the last 0.0001%
-chance. Things might start to crunch a little if you use <code>1000(g(0.0001))<code>.
-Similar to coins, <code>g(4)<code>, <code>g(1/4)<code>, and <code>g(0.25)<code> are all equivalent.
-<br><br>
-The Poisson distribution is denoted <code>Pois(L)<code> for positive parameter <code>L<code>. This
-has no analog to physical dice. Numerical stability is dicey for this one.
+The geometric distribution is denoted <code>g(q)</code>. These can produce any positive
+            integer, but for calculating statistics the library rounds off the last 0.0001%
+            chance. Things might start to crunch a little if you use <code>1000(g(0.0001))</code>.
+            Similar to coins, <code>g(4)</code>, <code>g(1/4)</code>, and <code>g(0.25)</code> are all equivalent.
+            <br><br>
+            The Poisson distribution is denoted <code>Pois(L)</code> for positive parameter <code>L</code>. This
+            has no analog to physical dice. Numerical stability is dicey for this one.
 </p>
