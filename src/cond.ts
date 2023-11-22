@@ -69,7 +69,7 @@ export class Or extends Roll {
     }
 
     mean() {
-        return this.rolls.reduce((a,r) => a+r.roll(), 0) / this.length;
+        return this.rolls.reduce((a,r) => a+r.mean(), 0) / this.length;
     }
 }
 
