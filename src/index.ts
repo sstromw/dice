@@ -165,7 +165,6 @@ function addRoll() {
                 stats_populated: false,
                 color: color,
             };
-            console.log(obj.color);
             Object.entries(obj).forEach(([k,v]) => {
                 if (v === null) {
                     throw new Error(`Cannot find element: ${k}`)
