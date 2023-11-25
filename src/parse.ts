@@ -166,22 +166,22 @@ export class Parse {
         }
 
         // Match binary operators
-        if (R = this.parseBinaryOp(s, "=", (l,r) => new Eq(l,r)) as Roll) {
-            return R;
-        }
         if (R = this.parseBinaryOp(s, "!=", (l,r) => new Ne(l,r)) as Roll) {
-            return R;
-        }
-        if (R = this.parseBinaryOp(s, "<", (l,r) => new Lt(l,r)) as Roll) {
             return R;
         }
         if (R = this.parseBinaryOp(s, "<=", (l,r) => new Le(l,r)) as Roll) {
             return R;
         }
-        if (R = this.parseBinaryOp(s, ">", (l,r) => new Gt(l,r)) as Roll) {
+        if (R = this.parseBinaryOp(s, ">=", (l,r) => new Ge(l,r)) as Roll) {
             return R;
         }
-        if (R = this.parseBinaryOp(s, ">=", (l,r) => new Ge(l,r)) as Roll) {
+        if (R = this.parseBinaryOp(s, "=", (l,r) => new Eq(l,r)) as Roll) {
+            return R;
+        }
+        if (R = this.parseBinaryOp(s, "<", (l,r) => new Lt(l,r)) as Roll) {
+            return R;
+        }
+        if (R = this.parseBinaryOp(s, ">", (l,r) => new Gt(l,r)) as Roll) {
             return R;
         }
 
