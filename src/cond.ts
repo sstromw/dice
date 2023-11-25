@@ -106,7 +106,7 @@ export class Eq extends CompareOp {
 
 export class Ne extends CompareOp {
     constructor(readonly left: Roll, readonly right: Roll) {
-        super((x,y) => x != y, left, right, "!=");
+        super((x,y) => x != y, left, right, "&#8800;");
     }
 
     density() {
@@ -136,7 +136,7 @@ export class Gt extends CompareOp {
 
 export class Le extends CompareOp {
     constructor(readonly left: Roll, readonly right: Roll) {
-        super((x,y) => x <= y, left, right, "<=");
+        super((x,y) => x <= y, left, right, "&#8804;");
     }
 
     density() {
@@ -166,7 +166,7 @@ export class Lt extends CompareOp {
 
 export class Ge extends CompareOp {
     constructor(readonly left: Roll, readonly right: Roll) {
-        super((x,y) => x >= y, left, right, ">=");
+        super((x,y) => x >= y, left, right, "&#8805;");
     }
 
     density() {

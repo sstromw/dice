@@ -73,6 +73,12 @@ export class Prod extends AssociativeReduction {
 
     // Rolls are independent
     mean() { return _prod(this.rolls.map((R) => R.mean())); }
+
+    toString() {
+        let s = this.rolls.map(
+            (r) => r instanceof Sum ? `(${r})` : `${r}`).join(' * ');
+        return s;
+    }
 }
 
 export class Min extends AssociativeReduction {
