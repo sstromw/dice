@@ -31,7 +31,6 @@ interface ListItem {
     chart: HTMLElement,            // .chart
 
     stats_populated: boolean,
-    color: string,
 }
 
 var ROLLS = new Map<number, ListItem>();
@@ -89,7 +88,6 @@ function populateStats(id: number) {
             {
               label: 'Probability',
               data: data.map(e => e[1]),
-              backgroundColor: item.color,
             }
           ]
         },
@@ -163,7 +161,6 @@ function addRoll() {
                 percentiles: item.querySelector('.percentiles') as HTMLElement,
                 chart: item.querySelector('.chart') as HTMLElement,
                 stats_populated: false,
-                color: color,
             };
             Object.entries(obj).forEach(([k,v]) => {
                 if (v === null) {
@@ -176,9 +173,6 @@ function addRoll() {
             obj.rollButton.addEventListener('click', rollDie);
             obj.deleteButton.addEventListener('click', deleteRoll);
             obj.showStatsButton.addEventListener('click', showStats);
-            obj.rollButton.style.backgroundColor = obj.color;
-            obj.deleteButton.style.backgroundColor = obj.color;
-            obj.showStatsButton.style.color = obj.color;
             ROLLS.set(roll_id, obj);
             roll_id++;
             INPUT.value = "";
