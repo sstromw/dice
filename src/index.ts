@@ -78,6 +78,7 @@ function populateStats(id: number) {
         throw new Error("type error: chart");
     }
     // TODO https://stackoverflow.com/questions/30256695/chart-js-drawing-an-arbitrary-vertical-line
+    // TODO https://www.chartjs.org/docs/latest/samples/other-charts/combo-bar-line.html
     const pmf_chart = new Chart(
       item.chart,
       {

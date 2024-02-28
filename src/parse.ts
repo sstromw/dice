@@ -86,7 +86,7 @@ export class Parse {
                 }
                 if (m.groups?.prefix == "g") {
                     // TODO you should be able to write G(1/100)
-                    let x = this.parseProb(m.groups?.infix);
+                    let x = this.parseProb(m.groups?.infix) || 0.5;
                     R = new Geometric(x);
                 }
                 if (m.groups?.prefix == "c") {
