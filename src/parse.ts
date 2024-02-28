@@ -85,7 +85,6 @@ export class Parse {
                     R = new Mult(n, R as Roll);
                 }
                 if (m.groups?.prefix == "g") {
-                    // TODO you should be able to write G(1/100)
                     let x = this.parseProb(m.groups?.infix) || 0.5;
                     R = new Geometric(x);
                 }
@@ -211,6 +210,11 @@ export class Parse {
         // Match fair Coin
         if (m = s.match(/^c$/)) {
             return new Coin();
+        }
+        
+        // Match parameterless Geometric
+        if (m = s.match(/^g$/)) {
+            return new Geometric(0.5);
         }
 
         // Match token
