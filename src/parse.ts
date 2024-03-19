@@ -202,19 +202,31 @@ export class Parse {
             return die;
         }
 
+        // Match Coin shorthand
+        m = s.match(/^(?<n_rolls>[0-9]*)c(?<roll_size>[0-9]*)$/);
+        if (m) {
+            let n = +(m.groups?.roll_size || 2);
+            let die = new Coin(1/n);
+            if (m.groups?.n_rolls) {
+                return new Mult(+(m.groups?.n_rolls || 1), die);
+            }
+            return die;
+        }
+
+        // Match Geometric shorthand
+        m = s.match(/^(?<n_rolls>[0-9]*)g(?<roll_size>[0-9]*)$/);
+        if (m) {
+            let n = +(m.groups?.roll_size || 2);
+            let die = new Geometric(1/n);
+            if (m.groups?.n_rolls) {
+                return new Mult(+(m.groups?.n_rolls || 1), die);
+            }
+            return die;
+        }
+
         // Match Const
         if (m = s.match(/^([0-9]*)$/)) {
             return new Const(+s);
-        }
-
-        // Match fair Coin
-        if (m = s.match(/^c$/)) {
-            return new Coin();
-        }
-        
-        // Match parameterless Geometric
-        if (m = s.match(/^g$/)) {
-            return new Geometric(0.5);
         }
 
         // Match token

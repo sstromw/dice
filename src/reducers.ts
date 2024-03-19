@@ -54,6 +54,10 @@ export class Sum extends AssociativeReduction {
 }
 
 // Ok, Mult is a repeated Sum but Prod is a product.
+// When you calculate the sample space for this object, we only find the pdf
+// for the underlying roll once and then Sum does an O(n^2*|R|) loop. This
+// could be faster if we use more memory and fast exponentiation. Right now,
+// that's premature optimization.
 export class Mult extends Sum {
     constructor(readonly n: number, readonly R: Roll) {
         super(Array.from({ length: n }, (_) => R));
