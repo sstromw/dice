@@ -206,6 +206,9 @@ export class Parse {
         m = s.match(/^(?<n_rolls>[0-9]*)c(?<roll_size>[0-9]*)$/);
         if (m) {
             let n = +(m.groups?.roll_size || 2);
+            if (n == 0) {
+                return new Error(`Caught infinite probability in ${s}`);
+            }
             let die = new Coin(1/n);
             if (m.groups?.n_rolls) {
                 return new Mult(+(m.groups?.n_rolls || 1), die);
@@ -217,6 +220,9 @@ export class Parse {
         m = s.match(/^(?<n_rolls>[0-9]*)g(?<roll_size>[0-9]*)$/);
         if (m) {
             let n = +(m.groups?.roll_size || 2);
+            if (n == 0) {
+                return new Error(`Caught infinite probability in ${s}`);
+            }
             let die = new Geometric(1/n);
             if (m.groups?.n_rolls) {
                 return new Mult(+(m.groups?.n_rolls || 1), die);
