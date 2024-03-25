@@ -5,11 +5,17 @@ export class Parse {
     original_input: string
     tokenized_input: string
     tokens: Map<string, Roll>
-    constructor(readonly s: string) {
+    constructor(readonly s: string, readonly labels: Map<string, Roll>) {
         this.original_input = s;
         this.tokenized_input = 
             this.original_input.toLowerCase().replace(/\s/g, '');
         this.tokens = new Map<string, Roll>();
+        if (labels) {
+            let entries = Array.from(labels.entries());
+            entries.forEach(([k,v]) => {
+                this.tokens.set(`{${k}}`, v);
+            })
+        }
     }
 
     private addToken(s: string, r: Roll) {
@@ -238,6 +244,17 @@ export class Parse {
         // Match token
         if (m = s.match(/^x_[0-9]*$/)) {
             return this.tokens.get(s) || Error(`unknown symbol: ${s}`);
+        }
+
+        if (m = s.match(/^(?<n_rolls>[0-9]*)(?<label>{[^_]+})/)) {
+            let roll = this.tokens.get(m.groups?.label)
+            if (roll == undefined) {
+                return new Error(`unknown label: ${m.groups?.label}`);
+            }
+            if (m.groups?.n_rolls) {
+                roll = new Mult(+(m.groups?.n_rolls || 1), roll);
+            }
+            return roll;
         }
 
         return new Error(`unknown symbol: ${s}`);

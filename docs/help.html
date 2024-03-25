@@ -95,11 +95,20 @@
 </ul>
 Comparison operators and coins are useful as the condition operator of <code>cond</code>.
 </p>
+<h3>User-defined distributions</h3>
+<p>
+    Using the "add label" box, you can store the distribution and reference it elsewhere using brackets. Try this:
+    <ol>
+        <li>Create a roll with <code>d5 + 6*(g(5/6)-1)</code></li>
+        <li>Add the label "d6!"</li>
+        <li>Create new rolls like <code>4{d6!}</code> or <code>1 + {d6!}*{d6!}</code></li>
+    </ol>
+</p>
 <h3>Geometric and Poisson distributions</h3>
 <p>
     The geometric distribution is denoted <code>g(q)</code>. These can produce any positive integer, but for calculating
     statistics the library rounds off the last 0.0001% chance. Things might start to crunch a little if you use
-    <code>1000(g(0.0001))</code>. Similar to coins, <code>g(4)</code>, <code>g(1/4)</code>, and <code>g(0.25)</code> are
+    <code>1000(g(0.0001))</code>. Similar to coins, <code>g4</code>, <code>g(1/4)</code>, and <code>g(0.25)</code> are
     all equivalent.
     <br><br>
     The Poisson distribution is denoted <code>Pois(L)</code> for positive parameter <code>L</code>. This has no analog

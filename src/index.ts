@@ -24,6 +24,7 @@ interface ListItem {
     rollButton: HTMLElement,       // .roll-button
     display: HTMLElement,          // .roll-display
     deleteButton: HTMLElement,     // .delete
+    labelInput: HTMLElement,       // .add-label
     showStatsButton: HTMLElement,  // .show-stats
     statsDiv: HTMLElement,         // .content
     stats: HTMLElement,            // .stats
@@ -140,15 +141,21 @@ function addRoll() {
     let str = INPUT.value;
     INPUT.style.backgroundColor = "white";
     if (str) {
-        let R = new Parse(str).parse();
+        let labels: Map<string, Roll> = null;
+        if (str.match(/.*{.*}.*/)) {
+            labels = new Map<string, Roll>();
+            ROLLS.forEach((obj) => {
+                let label = (obj.labelInput as HTMLInputElement).value;
+                if (label) {
+                    labels.set(label, obj.roll);
+                }
+            })
+        }
+        let R = new Parse(str, labels).parse();
         if (R instanceof Roll) {
             let template = document.getElementById('roll-item') as HTMLTemplateElement;
             let item = template.content.cloneNode(true) as Element;
             item.querySelector('.button-text').innerHTML = R.toString();
-
-            let color = Math.floor(Math.random() * (1<<24)).toString(16);
-            while (color.length < 6) { color = '0' + color; }
-            color = '#' + color;
 
             let obj = {
                 roll: R,
@@ -156,6 +163,7 @@ function addRoll() {
                 rollButton: item.querySelector('.roll-button') as HTMLElement,
                 display: item.querySelector('.roll-display') as HTMLElement,
                 deleteButton: item.querySelector('.delete') as HTMLElement,
+                labelInput: item.querySelector('.add-label') as HTMLElement,
                 showStatsButton: item.querySelector('.show-stats') as HTMLElement,
                 statsDiv: item.querySelector('.content') as HTMLElement,
                 stats: item.querySelector('.stats') as HTMLElement,
