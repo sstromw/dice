@@ -1,4 +1,4 @@
-import { Roll } from "./roll";
+import { Roll, D, Geometric, Coin } from "./roll";
 import { DefaultMap, SampleSpace } from "./sample_space";
 
 abstract class AssociativeReduction extends Roll {
@@ -65,7 +65,14 @@ export class Mult extends Sum {
         this.n = n;
     }
 
-    toString() { return `${this.n}${this.R}`; }
+    toString() {
+        if (this.R instanceof D ||
+            this.R instanceof Coin ||
+            this.R instanceof Geometric) {
+            return `${this.n}${this.R}`;
+        }
+        return `${this.n}(${this.R})`;
+    }
 }
 
 let _prod = (M: number[]) => M.reduce((a,b) => a*b, 1);
