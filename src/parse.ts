@@ -13,7 +13,7 @@ export class Parse {
         if (labels) {
             let entries = Array.from(labels.entries());
             entries.forEach(([k,v]) => {
-                this.tokens.set(`{${k}}`, v);
+                this.tokens.set(`{${k.toLowerCase()}}`, v);
             })
         }
     }
