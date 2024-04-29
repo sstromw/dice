@@ -222,3 +222,73 @@ export class Poisson extends Roll {
 
     toString() { return `Pois(${this.rate})`; }
 }
+
+export class CouponCollector extends Roll {
+    // If you repeatedly draw one of N options, this random variable represents
+    // the number of draws it takes to get all options at least once.
+    constructor(readonly n: number) {
+        super();
+        this.n = n;
+    }
+    
+    toString() { return `CouponCollector(${this.n})`; }
+
+    roll() {
+        let X = Array.from({ length: this.n }, (_) => true);
+        let count = this.n;
+        let draws = 0;
+        while (count > 0) {
+            draws += 1;
+            let i = Math.floor(Math.random() * this.n);
+            if (X[i]) {
+                X[i] = false;
+                count -= 1;
+            }
+        }
+        return draws;
+    }
+
+    // This is a binomial coefficient cache
+    _cache: Array<number>;
+    density() { return new DefaultMap(); }
+    sample_space() {
+        if (this._sample_space !== undefined) {
+            return this._sample_space;
+        }
+        // P[T=t] = n!/n^t {t-1 n-1}
+        //        = n!/n^t (1/(n-1)! sum_{i=1..n-1} (-1)^(n-1-i) (n-1 i) i^(t-1))
+        //        = n/n^t sum_{i=1..n-1} (-1)^(n-1-i) (n-1 i) i^(t-1)
+        //        = sum_{i=1..n-1} (-1)^(n-1-i) (n-1 i) (i/n)^(t-1)
+        this._cache = Array.from({length: this.n-1 });
+        let num = this.n % 2 ? 1 : -1;
+        let den = 1;
+        for (let i = 1; i < this.n; i += 1) {
+            num *= i - this.n
+            den *= i
+            this._cache[i-1] = num / den;
+        }
+        this._sample_space = new SampleSpace(
+            (t) => {
+                if (t < this.n) {
+                    return 0;
+                }
+                let p = 0;
+                for (let i = 1; i < this.n; i += 1) {
+                    p += this._cache[i-1] * Math.pow(i/this.n, t-1);
+                }
+                return p;
+            },
+        );
+        return this._sample_space;
+    }
+
+    mean() {
+        let s = 0;
+        for (let i = 1; i <= this.n; i++) {
+            s += 1/i;
+        }
+        return s * this.n;
+    }
+}
+
+// TODO: Hypergeometric distribution
