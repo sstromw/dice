@@ -88,6 +88,7 @@ export class SampleSpace implements Iterable<[number, number]> {
                 s += this.pmf(keys[i]);
                 this._cdf.set(keys[i], s);
             }
+            this._cdf.max_value = keys[keys.length-1];
         }
     }
     
@@ -118,8 +119,8 @@ export class SampleSpace implements Iterable<[number, number]> {
         if (typeof this._cdf === "function") {
             return this._cdf(n);
         }
-        if (n < (this._cdf?.min_value || Number.MIN_SAFE_INTEGER)) return 0;
-        if (n > (this._cdf?.max_value || Number.MAX_SAFE_INTEGER)) return 1;
+        if (this._cdf?.min_value !== undefined && n < this._cdf?.min_value) return 0;
+        if (this._cdf?.max_value !== undefined && n > this._cdf?.max_value) return 1;
         return this._cdf?.get(n) || 0;
     }
 }

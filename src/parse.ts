@@ -126,9 +126,9 @@ export class Parse {
         let m = s.match(re);
         if (m) {
             // TODO add error checking
-            let L = this._parse(m.groups?.left || "");
-            let R = this._parse(m.groups?.right || "");
-            return fn(L as Roll, R as Roll);
+            let L = this._parse(m.groups?.left || "") as Roll;
+            let R = this._parse(m.groups?.right || "") as Roll;
+            return fn(L, R);
         }
         return undefined;
     }
