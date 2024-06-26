@@ -226,6 +226,8 @@ export class Poisson extends Roll {
 export class CouponCollector extends Roll {
     // If you repeatedly draw one of N options, this random variable represents
     // the number of draws it takes to get all options at least once.
+    //
+    // Note: This is also G(1/n) + G(2/n) + ... + G(n/n)
     constructor(readonly n: number) {
         super();
         this.n = n;
