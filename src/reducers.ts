@@ -92,14 +92,36 @@ export class Prod extends AssociativeReduction {
     }
 }
 
-export class Min extends AssociativeReduction {
-    constructor(readonly rolls: Roll[]) {
-        super(rolls, (R) => Math.min(...R), "Min");
+export class Min extends Roll {
+    constructor(readonly rolls: Array<Roll>) {
+        super();
         this.rolls = rolls;
+    }
+
+    roll() {
+        let s = Number.MAX_SAFE_INTEGER;
+        this.rolls.forEach(r => { s = Math.min(r.roll(), s); });
+        return s;
+    }
+
+    density() { return new DefaultMap(); }  // Should never be called
+    sample_space(): SampleSpace {
+        if (this._sample_space !== undefined) {
+            return this._sample_space;
+        }
+        let min_value = Number.MAX_SAFE_INTEGER;
+        this.rolls.forEach(r => { min_value = Math.min(r.sample_space().min_value, min_value); })
+        let cdf = (n: number) => 1 - this.rolls.reduce((p, r) => p*(1-r.cdf(n)), 1);
+        this._sample_space = new SampleSpace(undefined, cdf, true, min_value);
+        return this._sample_space;
+    }
+
+    toString() {
+        let strs = this.rolls.map((r) => r.toString()).join(',');
+        return `Min(${strs})`;
     }
 }
 
-// Max can be done more efficiently without the generic
 export class Max extends Roll {
     constructor(readonly rolls: Array<Roll>) {
         super();
@@ -117,8 +139,10 @@ export class Max extends Roll {
         if (this._sample_space !== undefined) {
             return this._sample_space;
         }
+        let min_value = Number.MAX_SAFE_INTEGER;
+        this.rolls.forEach(r => { min_value = Math.min(r.sample_space().min_value, min_value); })
         let cdf = (n: number) => this.rolls.reduce((p, r) => p*r.cdf(n), 1);
-        this._sample_space = new SampleSpace(undefined, cdf);
+        this._sample_space = new SampleSpace(undefined, cdf, true, min_value);
         return this._sample_space;
     }
 
