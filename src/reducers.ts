@@ -1,5 +1,6 @@
 import { Roll, D, Geometric, Coin } from "./roll";
 import { DefaultMap, SampleSpace } from "./sample_space";
+import { BinomialCoefficient } from "./util";
 
 abstract class AssociativeReduction extends Roll {
     constructor(readonly rolls: Roll[],
@@ -63,6 +64,22 @@ export class Mult extends Sum {
         super(Array.from({ length: n }, (_) => R));
         this.R = R;
         this.n = n;
+    }
+
+    sample_space() {
+        if (this._sample_space !== undefined) {
+            return this._sample_space;
+        }
+        if (this.R instanceof Geometric) {
+            let p = this.R.p;
+            console.log("setting sample space")
+            this._sample_space = new SampleSpace((m) =>
+                BinomialCoefficient.instance.get(m-1, this.n-1) * Math.pow(p, this.n) * Math.pow(1-p, m-this.n)
+            )
+            console.log("sample space is set")
+            return this._sample_space;
+        }
+        return super.sample_space()
     }
 
     toString() {
