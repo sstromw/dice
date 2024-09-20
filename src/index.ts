@@ -100,9 +100,10 @@ function populateStats(id: number) {
     );
     let mean = item.roll.mean().toFixed(2);
     let stdev = item.roll.stdev().toFixed(2);
+    let ksn = item.roll.ks_normality().toFixed(2);
     item.stats.innerHTML += `<tr><td>&#956;</td><td>${mean}</td></tr>`
     item.stats.innerHTML += `<tr><td>&#963;</td><td>${stdev}</td></tr>`;
-    item.stats.innerHTML += `<tr><td>KSN</td><td>${stdev}</td></tr>`;
+    item.stats.innerHTML += `<tr><td>KSN</td><td>${ksn}</td></tr>`;
 
     let buckets = [10, 25, 50, 75, 90];
     for (let t of buckets) {

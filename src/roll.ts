@@ -2,8 +2,8 @@ import { DefaultMap, SampleSpace } from "./sample_space";
 
 function erf(x: number): number {
     // Sergei Winitzki approx
-    let sgn = x * (x > 0 ? 1 : -1);
-    let t = 0.140012*x*x;
+    let sgn = (x>0 ? 1 : 0) - (x<0 ? 1 : 0);
+    let t = 0.147*x*x;
     let u = (4/Math.PI + t) / (1 + t);
     return sgn * Math.sqrt(1-Math.exp(-u*x*x))
 }
@@ -53,8 +53,9 @@ export abstract class Roll {
         let mu = this.mean()
         let sd = this.stdev()
         let m = 0
-        for (let [k,p] of this.sample_space()) {
-            m = Math.max(m, Math.abs(p - 0.5 * (1 + erf((k-mu)/(sd*Math.SQRT2)))));
+        for (let [k,_] of this.sample_space()) {
+            let y = 0.5 * (1 + erf((k-mu)/(sd*Math.SQRT2)));
+            m = Math.max(m, Math.abs(this.cdf(k) - y));
         }
         return m;
     }
