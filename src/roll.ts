@@ -1,5 +1,13 @@
 import { DefaultMap, SampleSpace } from "./sample_space";
 
+function erf(x: number): number {
+    // Sergei Winitzki approx
+    let sgn = x * (x > 0 ? 1 : -1);
+    let t = 0.140012*x*x;
+    let u = (4/Math.PI + t) / (1 + t);
+    return sgn * Math.sqrt(1-Math.exp(-u*x*x))
+}
+
 export abstract class Roll {
     abstract toString(): string;
     abstract roll(): number;
@@ -38,6 +46,17 @@ export abstract class Roll {
     }
     stdev(): number {
         return Math.sqrt(this.variance());
+    }
+
+    // Normality statistic according to Kolmogorov-Smirnov test
+    ks_normality(): number {
+        let mu = this.mean()
+        let sd = this.stdev()
+        let m = 0
+        for (let [k,p] of this.sample_space()) {
+            m = Math.max(m, Math.abs(p - 0.5 * (1 + erf((k-mu)/(sd*Math.SQRT2)))));
+        }
+        return m;
     }
 
     // So medians aren't unique, but shut up. We're returning the smallest median.

@@ -102,6 +102,7 @@ function populateStats(id: number) {
     let stdev = item.roll.stdev().toFixed(2);
     item.stats.innerHTML += `<tr><td>&#956;</td><td>${mean}</td></tr>`
     item.stats.innerHTML += `<tr><td>&#963;</td><td>${stdev}</td></tr>`;
+    item.stats.innerHTML += `<tr><td>KSN</td><td>${stdev}</td></tr>`;
 
     let buckets = [10, 25, 50, 75, 90];
     for (let t of buckets) {
